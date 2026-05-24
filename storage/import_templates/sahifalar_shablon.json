@@ -1,0 +1,142 @@
+{
+  "_yo'riqnoma": "Bu faylni tahrirlang va saqlang. Keyin: php artisan db:seed --class=CmsContentImportSeeder",
+
+  "homepage": {
+    "slide1_badge": {
+      "uz": "HOSPITALITY MANAGEMENT",
+      "ru": "ГОСТИНИЧНЫЙ МЕНЕДЖМЕНТ",
+      "en": "HOSPITALITY MANAGEMENT"
+    },
+    "slide1_title": {
+      "uz": "Xalqaro Turizm va Mehmondo'stlik Akademiyasi",
+      "ru": "Международная Академия Туризма и Гостеприимства",
+      "en": "International Academy of Tourism and Hospitality"
+    },
+    "slide1_subtitle": {
+      "uz": "Kelajak kadrlarini bugun tayyorlaymiz",
+      "ru": "Готовим будущих профессионалов сегодня",
+      "en": "Preparing future professionals today"
+    },
+    "slide2_badge": {
+      "uz": "TA'LIM SIFATI",
+      "ru": "КАЧЕСТВЕННОЕ ОБРАЗОВАНИЕ",
+      "en": "QUALITY EDUCATION"
+    },
+    "slide2_title": {
+      "uz": "Zamonaviy ta'lim - Yorqin kelajak",
+      "ru": "Современное образование - Светлое будущее",
+      "en": "Modern Education - Bright Future"
+    },
+    "slide2_subtitle": {
+      "uz": "Xalqaro standartlar asosida ta'lim",
+      "ru": "Образование на основе международных стандартов",
+      "en": "Education based on international standards"
+    },
+    "quick_link1_title": {
+      "uz": "HEMIS tizimiga kirish",
+      "ru": "Вход в систему HEMIS",
+      "en": "HEMIS System Login"
+    },
+    "quick_link1_desc": {
+      "uz": "Talabalar uchun HEMIS tizimi orqali o'quv jarayonini kuzatish",
+      "ru": "Отслеживание учебного процесса через HEMIS для студентов",
+      "en": "Track academic progress through HEMIS for students"
+    },
+    "quick_link2_title": {
+      "uz": "Kutubxona resurslari",
+      "ru": "Ресурсы библиотеки",
+      "en": "Library Resources"
+    },
+    "quick_link2_desc": {
+      "uz": "Elektron kutubxona va o'quv materiallari bazasi",
+      "ru": "Электронная библиотека и база учебных материалов",
+      "en": "Digital library and educational materials database"
+    },
+    "quick_link3_title": {
+      "uz": "Qabulxona",
+      "ru": "Приёмная комиссия",
+      "en": "Admission Office"
+    },
+    "quick_link3_desc": {
+      "uz": "Hujjat topshirish va qabul jarayoni haqida",
+      "ru": "О подаче документов и процессе поступления",
+      "en": "About document submission and admission process"
+    },
+    "news_title": {
+      "uz": "So'nggi yangiliklar",
+      "ru": "Последние новости",
+      "en": "Latest News"
+    }
+  },
+
+  "footer": {
+    "footer_title": {
+      "uz": "Xalqaro Turizm va Mehmondo'stlik Akademiyasi",
+      "ru": "Международная Академия Туризма и Гостеприимства",
+      "en": "International Academy of Tourism and Hospitality"
+    },
+    "footer_description": {
+      "uz": "Turizm va mehmondo'stlik sohasida yuqori malakali mutaxassislarni tayyorlash",
+      "ru": "Подготовка высококвалифицированных специалистов в сфере туризма и гостеприимства",
+      "en": "Training highly qualified specialists in tourism and hospitality"
+    },
+    "contact_address": {
+      "uz": "Samarqand shahar, Istiqlol ko'chasi, 47",
+      "ru": "г. Самарканд, ул. Истиклол, 47",
+      "en": "47 Istiqlol Street, Samarkand city"
+    },
+    "contact_phone": {
+      "uz": "+998 66 233 XX XX",
+      "ru": "+998 66 233 XX XX",
+      "en": "+998 66 233 XX XX"
+    },
+    "contact_email": {
+      "uz": "info@tourism.uz",
+      "ru": "info@tourism.uz",
+      "en": "info@tourism.uz"
+    },
+    "copyright_text": {
+      "uz": "© 2025 Tourism Academy. Barcha huquqlar himoyalangan.",
+      "ru": "© 2025 Tourism Academy. Все права защищены.",
+      "en": "© 2025 Tourism Academy. All rights reserved."
+    }
+  },
+
+  "about": {
+    "page_title": {
+      "uz": "Biz haqimizda",
+      "ru": "О нас",
+      "en": "About Us"
+    },
+    "page_description": {
+      "uz": "Akademiyamiz tarixi, missiyasi va qadriyatlari haqida batafsil ma'lumot",
+      "ru": "Подробная информация об истории, миссии и ценностях нашей академии",
+      "en": "Detailed information about our academy history, mission and values"
+    },
+    "hero_badge": {
+      "uz": "BIZ HAQIMIZDA",
+      "ru": "О НАС",
+      "en": "ABOUT US"
+    }
+  },
+
+  "contact": {
+    "page_title": {
+      "uz": "Aloqa",
+      "ru": "Контакты",
+      "en": "Contact"
+    },
+    "page_description": {
+      "uz": "Biz bilan bog'laning",
+      "ru": "Свяжитесь с нами",
+      "en": "Get in touch with us"
+    }
+  },
+
+  "social_links": {
+    "facebook": "https://facebook.com/academy",
+    "instagram": "https://instagram.com/academy",
+    "telegram": "https://t.me/academy",
+    "youtube": "https://youtube.com/academy"
+  }
+}

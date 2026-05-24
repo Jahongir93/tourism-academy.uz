@@ -1,0 +1,52 @@
+# ── Claude Code (hech qachon yuklanmasin) ──────────────────────
+.claude/
+
+# ── Laravel ────────────────────────────────────────────────────
+/vendor/
+/node_modules/
+/.env
+/.env.backup
+/.env.*.local
+/.env.production
+.env.example.local
+
+# ── Laravel compiled / cache ───────────────────────────────────
+/bootstrap/cache/*.php
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+
+# ── Uploaded user files (serverda o'zi bor) ───────────────────
+/storage/app/public/
+/public/storage
+
+# ── System & IDE ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.user
+
+# ── Composer & npm ────────────────────────────────────────────
+composer.phar
+npm-debug.log
+yarn-error.log
+
+# ── Secrets / keys ────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+license-server/
+
+# ── Mobile / face system (alohida repo bo'lishi kerak) ────────
+mobile-app/
+face_attendance_system/
+
+# ── Temp ──────────────────────────────────────────────────────
+*.log
+*.cache
+*.tmp

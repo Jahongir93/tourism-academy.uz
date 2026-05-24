@@ -1,0 +1,1 @@
+<div style="height: {{ $element->settings['height'] ?? 50 }}px;"></div>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" width="900" height="700">
+  <defs>
+    <style>
+      .title-text { font-family: 'Arial', sans-serif; font-size: 22px; fill: #000; font-weight: bold; text-anchor: middle; }
+      .method-title { font-family: 'Arial', sans-serif; font-size: 15px; fill: #000; font-weight: bold; text-anchor: middle; }
+      .method-desc { font-family: 'Arial', sans-serif; font-size: 11px; fill: #555; text-anchor: middle; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="900" height="700" fill="#E8E8E8"/>
+  
+  <!-- Center circle -->
+  <circle cx="450" cy="350" r="120" fill="#87CEEB" stroke="#5CACEE" stroke-width="3"/>
+  <text x="450" y="330" class="title-text">Интерактивные</text>
+  <text x="450" y="355" class="title-text">методы в</text>
+  <text x="450" y="380" class="title-text">преподавании химии</text>
+  
+  <!-- Connection lines -->
+  <line x1="450" y1="230" x2="450" y2="130" stroke="#999" stroke-width="2"/>
+  <line x1="555" y1="270" x2="650" y2="170" stroke="#999" stroke-width="2"/>
+  <line x1="555" y1="430" x2="650" y2="530" stroke="#999" stroke-width="2"/>
+  <line x1="450" y1="470" x2="450" y2="570" stroke="#999" stroke-width="2"/>
+  <line x1="345" y1="430" x2="250" y2="530" stroke="#999" stroke-width="2"/>
+  <line x1="345" y1="270" x2="250" y2="170" stroke="#999" stroke-width="2"/>
+  
+  <!-- Top circle - Klaster (Orange) -->
+  <circle cx="450" cy="90" r="70" fill="#FFD700" stroke="#E6BE00" stroke-width="2"/>
+  <text x="450" y="75" class="method-title">Метод кластера</text>
+  <text x="450" y="95" class="method-desc">Визуализация связей</text>
+  <text x="450" y="110" class="method-desc">между понятиями</text>
+  
+  <!-- Top right circle - Baliq skeleti (Purple) -->
+  <circle cx="700" cy="150" r="70" fill="#DDA0DD" stroke="#BA55D3" stroke-width="2"/>
+  <text x="700" y="130" class="method-title">«Рыбий скелет»</text>
+  <text x="700" y="150" class="method-desc">Анализ причинно-</text>
+  <text x="700" y="165" class="method-desc">следственных связей</text>
+  
+  <!-- Bottom right circle - Aqliy hujum (Green) -->
+  <circle cx="700" cy="550" r="70" fill="#90EE90" stroke="#32CD32" stroke-width="2"/>
+  <text x="700" y="535" class="method-title">«Мозговой штурм»</text>
+  <text x="700" y="555" class="method-desc">Групповая генерация</text>
+  <text x="700" y="570" class="method-desc">идей</text>
+  
+  <!-- Bottom circle - Loyiha ishlari (Blue) -->
+  <circle cx="450" cy="610" r="70" fill="#87CEFA" stroke="#4682B4" stroke-width="2"/>
+  <text x="450" y="595" class="method-title">Проектная работа</text>
+  <text x="450" y="615" class="method-desc">Навыки исследования</text>
+  <text x="450" y="630" class="method-desc">и презентации</text>
+  
+  <!-- Bottom left circle - Rolli o'yinlar (Red/Pink) -->
+  <circle cx="200" cy="550" r="70" fill="#FFB6C1" stroke="#FF69B4" stroke-width="2"/>
+  <text x="200" y="535" class="method-title">Ролевые игры</text>
+  <text x="200" y="555" class="method-desc">Симуляция химических</text>
+  <text x="200" y="570" class="method-desc">процессов</text>
+  
+  <!-- Top left circle - Munozara (Yellow) -->
+  <circle cx="200" cy="150" r="70" fill="#FFFACD" stroke="#FFD700" stroke-width="2"/>
+  <text x="200" y="130" class="method-title">Дискуссия</text>
+  <text x="200" y="150" class="method-desc">Научное обсуждение</text>
+  <text x="200" y="165" class="method-desc">и критическое</text>
+  <text x="200" y="180" class="method-desc">мышление</text>
+</svg>

@@ -1,0 +1,277 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
+
+class Student extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'student_id',
+        'jshshir',
+        'first_name_cyrillic',
+        'first_name_latin',
+        'last_name_cyrillic',
+        'last_name_latin',
+        'middle_name_cyrillic',
+        'middle_name_latin',
+        'birth_date',
+        'gender',
+        'nationality_id',
+        'citizenship_id',
+        'photo_url',
+        'email',
+        'phone_primary',
+        'phone_secondary',
+        'telegram_username',
+        'status',
+        'social_status',
+        'user_id'
+    ];
+
+    protected $casts = [
+        'birth_date' => 'date',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($student) {
+            if (empty($student->student_id)) {
+                $student->student_id = self::generateStudentId();
+            }
+        });
+    }
+
+    /**
+     * Generate unique student ID
+     */
+    public static function generateStudentId(): string
+    {
+        $year = date('Y');
+        $lastStudent = self::whereYear('created_at', $year)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($lastStudent) {
+            $lastNumber = intval(substr($lastStudent->student_id, -5));
+            $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '00001';
+        }
+
+        return $year . $newNumber;
+    }
+
+    /**
+     * Get full name in Cyrillic
+     */
+    public function getFullNameCyrillicAttribute(): string
+    {
+        return trim("{$this->last_name_cyrillic} {$this->first_name_cyrillic} {$this->middle_name_cyrillic}");
+    }
+
+    /**
+     * Get full name in Latin
+     */
+    public function getFullNameLatinAttribute(): string
+    {
+        return trim("{$this->last_name_latin} {$this->first_name_latin} {$this->middle_name_latin}");
+    }
+
+    /**
+     * Get age
+     */
+    public function getAgeAttribute(): int
+    {
+        return $this->birth_date ? $this->birth_date->age : 0;
+    }
+
+    /**
+     * Relationships
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function passport(): HasOne
+    {
+        return $this->hasOne(StudentPassport::class);
+    }
+
+    public function educationDocs(): HasMany
+    {
+        return $this->hasMany(StudentEducationDoc::class);
+    }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(StudentAddress::class);
+    }
+
+    public function permanentAddress(): HasOne
+    {
+        return $this->hasOne(StudentAddress::class)->where('address_type', 'permanent');
+    }
+
+    public function temporaryAddress(): HasOne
+    {
+        return $this->hasOne(StudentAddress::class)->where('address_type', 'temporary');
+    }
+
+    public function familyMembers(): HasMany
+    {
+        return $this->hasMany(StudentFamilyMember::class);
+    }
+
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(StudentEnrollment::class);
+    }
+
+    public function currentEnrollment(): HasOne
+    {
+        return $this->hasOne(StudentEnrollment::class)->where('is_active', true)->latest();
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(StudentOrder::class, 'affected_students');
+    }
+
+    public function movements(): HasMany
+    {
+        return $this->hasMany(StudentMovement::class);
+    }
+
+    public function contracts(): HasMany
+    {
+        return $this->hasMany(StudentContract::class);
+    }
+
+    public function activeContracts(): HasMany
+    {
+        return $this->hasMany(StudentContract::class)->where('status', 'active');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(StudentPayment::class);
+    }
+
+    public function dormitoryResidence(): HasOne
+    {
+        return $this->hasOne(DormitoryResident::class)->where('status', 'active');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(StudentDocument::class);
+    }
+
+    public function alumni(): HasOne
+    {
+        return $this->hasOne(Alumni::class);
+    }
+
+    /**
+     * Scopes
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    public function scopeByFaculty($query, $facultyId)
+    {
+        return $query->whereHas('currentEnrollment', function ($q) use ($facultyId) {
+            $q->where('faculty_id', $facultyId);
+        });
+    }
+
+    public function scopeBySpecialty($query, $specialtyId)
+    {
+        return $query->whereHas('currentEnrollment', function ($q) use ($specialtyId) {
+            $q->where('specialty_id', $specialtyId);
+        });
+    }
+
+    public function scopeByGroup($query, $groupId)
+    {
+        return $query->whereHas('currentEnrollment', function ($q) use ($groupId) {
+            $q->where('group_id', $groupId);
+        });
+    }
+
+    public function scopeByCourse($query, $course)
+    {
+        return $query->whereHas('currentEnrollment', function ($q) use ($course) {
+            $q->where('current_course', $course);
+        });
+    }
+
+    public function scopeByEducationForm($query, $form)
+    {
+        return $query->whereHas('currentEnrollment', function ($q) use ($form) {
+            $q->where('education_form', $form);
+        });
+    }
+
+    public function scopeByEducationType($query, $type)
+    {
+        return $query->whereHas('currentEnrollment', function ($q) use ($type) {
+            $q->where('education_type', $type);
+        });
+    }
+
+    /**
+     * Helper methods
+     */
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isGraduated(): bool
+    {
+        return $this->status === 'graduated';
+    }
+
+    public function isExpelled(): bool
+    {
+        return $this->status === 'expelled';
+    }
+
+    public function isOnAcademicLeave(): bool
+    {
+        return $this->status === 'academic_leave';
+    }
+
+    public function hasDebt(): bool
+    {
+        // Check if student has unpaid contracts
+        return $this->activeContracts()
+            ->whereHas('payments', function ($q) {
+                $q->where('status', 'pending');
+            })->exists();
+    }
+
+    public function getTotalDebt(): float
+    {
+        $totalContractAmount = $this->activeContracts()->sum('amount');
+        $totalPaid = $this->payments()
+            ->where('status', 'completed')
+            ->sum('amount');
+        
+        return max(0, $totalContractAmount - $totalPaid);
+    }
+}
