@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('student_passports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->string('passport_series')->nullable();
-            $table->string('passport_number');
+            $table->string('passport_series', 10)->nullable();
+            $table->string('passport_number', 20);
             $table->date('issue_date');
             $table->string('issued_by');
             $table->date('expiry_date')->nullable();

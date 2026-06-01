@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('cms_contents', function (Blueprint $table) {
             $table->id();
-            $table->string('section');
-            $table->string('key');
+            $table->string('section', 100);
+            $table->string('key', 100);
             $table->text('value_uz')->nullable();
             $table->text('value_en')->nullable();
             $table->text('value_ru')->nullable();
