@@ -10,6 +10,7 @@ use App\Models\Hemis\Department;
 use App\Models\Hemis\Specialty;
 use App\Models\Hemis\AcademicGroup;
 use App\Models\Hemis\Student;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
@@ -109,7 +110,7 @@ class HemisSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
         $teacher->assignRole('Teacher');
-        $department->update(['head_user_id' => $teacher->id]);
+        $department->update(['head_id' => $teacher->id]);
 
         // Create Specialty
         $specialty = Specialty::create([
@@ -130,20 +131,32 @@ class HemisSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // Create Academic Group
-        $group = AcademicGroup::create([
-            'specialty_id' => $specialty->id,
-            'faculty_id' => $faculty->id,
-            'name' => 'TUR-21-01',
-            'course' => 3,
-            'max_students' => 30,
-            'current_students' => 25,
-            'curator_id' => $teacher->id,
-            'curator_name' => 'Azimov Jasur',
-            'academic_year' => 2024,
-            'semester' => '1',
-            'language' => 'uz',
-            'is_active' => true,
+        // Create Academic Group (academic_groups table)
+        AcademicGroup::create([
+            'specialty_id'    => $specialty->id,
+            'faculty_id'      => $faculty->id,
+            'name'            => 'TUR-21-01',
+            'course'          => 3,
+            'max_students'    => 30,
+            'current_students'=> 25,
+            'curator_id'      => $teacher->id,
+            'curator_name'    => 'Azimov Jasur',
+            'academic_year'   => 2024,
+            'semester'        => '1',
+            'language'        => 'uz',
+            'is_active'       => true,
+        ]);
+
+        // Create group in the `groups` table — students.group_id FK references this
+        $groupId = DB::table('groups')->insertGetId([
+            'name'           => 'TUR-21-01',
+            'code'           => 'TUR-21-01',
+            'department_id'  => $department->id,
+            'course'         => 3,
+            'students_count' => 2,
+            'education_type' => 'kunduzgi',
+            'created_at'     => now(),
+            'updated_at'     => now(),
         ]);
 
         // Create Student users
@@ -160,32 +173,27 @@ class HemisSeeder extends Seeder
 
         // Create Student record
         Student::create([
-            'user_id' => $studentUser1->id,
-            'student_id' => 'TAS2021001',
-            'hemis_id' => 'H2021001',
-            'first_name' => 'Shoxrux',
-            'last_name' => 'Aliyev',
-            'middle_name' => 'Bahromovich',
-            'birth_date' => '2003-05-15',
-            'gender' => 'erkak',
-            'passport_series' => 'AB',
-            'passport_number' => '1234567',
-            'pinfl' => '12345678901234',
-            'phone' => '+998901234567',
-            'email' => 'student1@tourism.uz',
-            'permanent_address' => 'Samarqand viloyati, Samarqand shahri',
-            'faculty_id' => $faculty->id,
-            'specialty_id' => $specialty->id,
-            'group_id' => $group->id,
-            'course' => 3,
-            'semester' => 5,
+            'user_id'        => $studentUser1->id,
+            'student_id'     => 'TAS2021001',
+            'first_name'     => 'Shoxrux',
+            'last_name'      => 'Aliyev',
+            'middle_name'    => 'Bahromovich',
+            'birth_date'     => '2003-05-15',
+            'gender'         => 'male',
+            'passport_series'=> 'AB',
+            'passport_number'=> '1234567',
+            'jshshir'        => '12345678901234',
+            'phone'          => '+998901234567',
+            'email'          => 'student1@tourism.uz',
+            'address'        => 'Samarqand viloyati, Samarqand shahri',
+            'faculty_id'     => $faculty->id,
+            'specialty_id'   => $specialty->id,
+            'group_id'       => $groupId,
+            'course'         => 3,
             'education_form' => 'kunduzgi',
             'education_type' => 'shartnoma',
-            'payment_form' => 'contract',
-            'admission_year' => 2021,
             'admission_date' => '2021-09-01',
-            'status' => 'active',
-            'gpa' => 4.2,
+            'status'         => 'active',
         ]);
 
         // Create another student
@@ -201,32 +209,27 @@ class HemisSeeder extends Seeder
         $studentUser2->assignRole('Student');
 
         Student::create([
-            'user_id' => $studentUser2->id,
-            'student_id' => 'TAS2021002',
-            'hemis_id' => 'H2021002',
-            'first_name' => 'Dilnoza',
-            'last_name' => 'Rahimova',
-            'middle_name' => 'Rustamovna',
-            'birth_date' => '2003-08-20',
-            'gender' => 'ayol',
-            'passport_series' => 'AC',
-            'passport_number' => '7654321',
-            'pinfl' => '98765432109876',
-            'phone' => '+998901234568',
-            'email' => 'student2@tourism.uz',
-            'permanent_address' => 'Samarqand viloyati, Kattaqo\'rg\'on shahri',
-            'faculty_id' => $faculty->id,
-            'specialty_id' => $specialty->id,
-            'group_id' => $group->id,
-            'course' => 3,
-            'semester' => 5,
+            'user_id'        => $studentUser2->id,
+            'student_id'     => 'TAS2021002',
+            'first_name'     => 'Dilnoza',
+            'last_name'      => 'Rahimova',
+            'middle_name'    => 'Rustamovna',
+            'birth_date'     => '2003-08-20',
+            'gender'         => 'female',
+            'passport_series'=> 'AC',
+            'passport_number'=> '7654321',
+            'jshshir'        => '98765432109876',
+            'phone'          => '+998901234568',
+            'email'          => 'student2@tourism.uz',
+            'address'        => 'Samarqand viloyati, Kattaqo\'rg\'on shahri',
+            'faculty_id'     => $faculty->id,
+            'specialty_id'   => $specialty->id,
+            'group_id'       => $groupId,
+            'course'         => 3,
             'education_form' => 'kunduzgi',
             'education_type' => 'byudjet',
-            'payment_form' => 'grant',
-            'admission_year' => 2021,
             'admission_date' => '2021-09-01',
-            'status' => 'active',
-            'gpa' => 4.8,
+            'status'         => 'active',
         ]);
 
         $this->command->info('HEMIS users created successfully!');
