@@ -239,6 +239,7 @@
 
 @push('scripts')
 <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('js/waf-safe-submit.js') }}"></script>
 <script>
 tinymce.init({
     selector: '.tinymce-editor',
