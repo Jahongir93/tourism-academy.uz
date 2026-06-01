@@ -123,6 +123,18 @@ class HomeController extends Controller
         return view('pages.contact');
     }
 
+    public function faq(Request $request)
+    {
+        $locale = $request->get('lang', Session::get('locale', 'uz'));
+        if (!in_array($locale, ['uz', 'ru', 'en'])) {
+            $locale = 'uz';
+        }
+        App::setLocale($locale);
+        Session::put('locale', $locale);
+
+        return view('pages.faq', compact('locale'));
+    }
+
     public function programs(Request $request)
     {
         // Get locale from URL parameter or session or default to 'uz'

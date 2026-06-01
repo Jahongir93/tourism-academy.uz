@@ -88,6 +88,7 @@ Route::get('/teachers', [App\Http\Controllers\HomeController::class, 'teachers']
 Route::get('/statistika', [App\Http\Controllers\HomeController::class, 'statistics'])->name('statistics');
 Route::get('/statistics', [App\Http\Controllers\HomeController::class, 'statistics']); // English alias
 Route::get('/blog', [App\Http\Controllers\HomeController::class, 'blog'])->name('blog');
+Route::get('/faq', [App\Http\Controllers\HomeController::class, 'faq'])->name('faq');
 Route::get('/lang/{lang}', [App\Http\Controllers\HomeController::class, 'setLanguage'])->name('lang.switch');
 
 // Public pages
