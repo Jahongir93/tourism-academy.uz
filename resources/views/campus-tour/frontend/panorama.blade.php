@@ -3,7 +3,7 @@
 @section('title', $panorama->title . ' - 360° Virtual Tur')
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+<link rel="stylesheet" href="{{ asset('vendor/pannellum/pannellum.css') }}"/>
 <style>
     #panorama-viewer {
         width: 100%;
@@ -199,7 +199,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script src="{{ asset('vendor/pannellum/pannellum.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Hotspots configuration

@@ -4,7 +4,7 @@
 @section('page-title', 'Panorama Ko\'rish')
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+<link rel="stylesheet" href="{{ asset('vendor/pannellum/pannellum.css') }}"/>
 <style>
     #panorama-viewer {
         width: 100%;
@@ -90,7 +90,7 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script src="{{ asset('vendor/pannellum/pannellum.js') }}"></script>
 <script>
 pannellum.viewer('panorama-viewer', {
     type: 'equirectangular',

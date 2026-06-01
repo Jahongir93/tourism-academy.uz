@@ -392,8 +392,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+<script src="{{ asset('vendor/tensorflow/tf.min.js') }}"></script>
+<script src="{{ asset('vendor/tensorflow/face-landmarks-detection.js') }}"></script>
 <script>
 let webcamStream = null;
 let faceDetectionModel = null;

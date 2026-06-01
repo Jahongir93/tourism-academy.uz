@@ -189,7 +189,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="{{ asset('vendor/qrcode/qrcode.min.js') }}"></script>
 <script>
 new QRCode(document.getElementById("qrcode-{{ $certificate->id }}"), {
     text: "{{ url('/verify/' . $certificate->certificate_number) }}",

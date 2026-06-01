@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'HEMIS') - Higher Education Management Information System</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="{{ asset('vendor/alpine/alpine.min.js') }}"></script>
 </head>
 <body class="bg-gray-50">
     <div x-data="{ sidebarOpen: false }" class="flex h-screen">

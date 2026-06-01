@@ -52,7 +52,7 @@
                         <div class="mt-4 pt-4 border-t border-gray-100">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($category->latestTopic->user->name) }}&background=random"
+                                    <img src="{{ url('avatar') }}?name={{ urlencode($category->latestTopic->user->name) }}&background=random"
                                          class="w-8 h-8 rounded-full">
                                     <div>
                                         <p class="text-sm">

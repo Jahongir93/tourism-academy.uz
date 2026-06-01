@@ -33,7 +33,10 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // serve disabled: /storage/{path} is handled by our own fallback
+            // route (StorageController) which serves from the PUBLIC disk so
+            // uploaded images load even when the storage:link symlink is absent.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],

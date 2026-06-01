@@ -118,14 +118,14 @@
     <meta name="description" content="@yield('description', 'Tourism va Service fakultetining rasmiy veb-sayti')">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="{{ asset('vendor/aos/aos.css') }}" rel="stylesheet">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+        @import url('{{ asset('vendor/fonts/inter.css') }}');
 
         /* ===== MODERN ACADEMIC DESIGN SYSTEM ===== */
         :root {
@@ -3080,26 +3080,26 @@
                         <div class="lang-dropdown">
                             <button class="lang-selector-new">
                                 @if($lang === 'uz')
-                                    <img src="https://flagcdn.com/w40/uz.png" alt="UZ">
+                                    <img src="{{ asset('vendor/flags/uz.png') }}" alt="UZ">
                                     <span>Uz</span>
                                 @elseif($lang === 'en')
-                                    <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                                    <img src="{{ asset('vendor/flags/gb.png') }}" alt="EN">
                                     <span>En</span>
                                 @else
-                                    <img src="https://flagcdn.com/w40/ru.png" alt="RU">
+                                    <img src="{{ asset('vendor/flags/ru.png') }}" alt="RU">
                                     <span>Ru</span>
                                 @endif
                                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </button>
                             <div class="lang-dropdown-menu">
                                 <a href="?lang=uz" class="{{ $lang === 'uz' ? 'active' : '' }}">
-                                    <img src="https://flagcdn.com/w40/uz.png" alt="UZ"> O'zbekcha
+                                    <img src="{{ asset('vendor/flags/uz.png') }}" alt="UZ"> O'zbekcha
                                 </a>
                                 <a href="?lang=en" class="{{ $lang === 'en' ? 'active' : '' }}">
-                                    <img src="https://flagcdn.com/w40/gb.png" alt="EN"> English
+                                    <img src="{{ asset('vendor/flags/gb.png') }}" alt="EN"> English
                                 </a>
                                 <a href="?lang=ru" class="{{ $lang === 'ru' ? 'active' : '' }}">
-                                    <img src="https://flagcdn.com/w40/ru.png" alt="RU"> Русский
+                                    <img src="{{ asset('vendor/flags/ru.png') }}" alt="RU"> Русский
                                 </a>
                             </div>
                         </div>
@@ -3503,9 +3503,9 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AOS -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{{ asset('vendor/aos/aos.js') }}"></script>
     <script>
         AOS.init({
             duration: 800,

@@ -4,7 +4,7 @@
 
 @push('styles')
 @if($settings->map_type !== 'image')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="{{ asset('vendor/leaflet/leaflet.css') }}" />
 @endif
 <style>
     .map-container {
@@ -295,7 +295,7 @@
 
 @push('scripts')
 @if($settings->map_type !== 'image')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ asset('vendor/leaflet/leaflet.js') }}"></script>
 @endif
 <script>
 document.addEventListener('DOMContentLoaded', function() {

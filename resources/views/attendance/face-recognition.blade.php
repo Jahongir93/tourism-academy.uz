@@ -6,8 +6,8 @@
 
 @section('styles')
 <!-- TensorFlow.js and Face Detection -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.js"></script>
+<script src="{{ asset('vendor/tensorflow/tf.min.js') }}"></script>
+<script src="{{ asset('vendor/tensorflow/blazeface.js') }}"></script>
 <style>
     :root {
         --primary-dark-green: #0d4f3c;

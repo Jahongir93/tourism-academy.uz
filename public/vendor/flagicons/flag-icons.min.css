@@ -1,0 +1,9 @@
+/* Minimal local flag-icons replacement — only the flags this app uses (uz, ru, gb).
+   Drop-in for the `fi fi-xx` markup. Flags served from /vendor/flags/. */
+.fi{position:relative;display:inline-block;width:1.333333em;line-height:1em;background-size:contain;background-position:50%;background-repeat:no-repeat;vertical-align:middle}
+.fi:before{content:"\00a0"}
+.fi.fis{width:1em;border-radius:50%}
+.fi-uz{background-image:url(../flags/uz.png)}
+.fi-ru{background-image:url(../flags/ru.png)}
+.fi-gb{background-image:url(../flags/gb.png)}
+.fi-en{background-image:url(../flags/gb.png)}

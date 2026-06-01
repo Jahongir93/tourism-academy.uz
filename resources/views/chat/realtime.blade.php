@@ -351,8 +351,8 @@
 
 @push('scripts')
 <!-- Pusher/Echo -->
-<script src="https://cdn.jsdelivr.net/npm/pusher-js@8.3.0/dist/web/pusher.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.15.3/dist/echo.iife.js"></script>
+<script src="{{ asset('vendor/pusher/pusher.min.js') }}"></script>
+<script src="{{ asset('vendor/pusher/echo.iife.js') }}"></script>
 
 <script>
 // Configuration

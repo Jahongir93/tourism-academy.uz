@@ -1,7 +1,7 @@
 @extends('layouts.dashboard-new')
 
 @push('styles')
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="{{ asset('vendor/tailwind/tailwind.min.js') }}"></script>
 @endpush
 
 @section('content')

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Ariza - {{ $application->application_number }}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        @import url('{{ asset('vendor/fonts/inter.css') }}');
 
         * {
             margin: 0;

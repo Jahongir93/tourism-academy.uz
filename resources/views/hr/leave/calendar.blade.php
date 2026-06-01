@@ -45,11 +45,11 @@
 </div>
 
 @push('styles')
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+<link href='{{ asset('vendor/fullcalendar/main.min.css') }}' rel='stylesheet' />
 @endpush
 
 @push('scripts')
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+<script src='{{ asset('vendor/fullcalendar/main.min.js') }}'></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');

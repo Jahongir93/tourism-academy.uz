@@ -117,9 +117,9 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="{{ asset('vendor/pdfjs/pdf.min.js') }}"></script>
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '{{ asset('vendor/pdfjs/pdf.worker.min.js') }}';
 
 let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null, scale = 1.5;
 const canvas = document.getElementById('pdf-canvas');

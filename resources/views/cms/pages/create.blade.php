@@ -213,7 +213,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+<script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
 <script>
 tinymce.init({
     selector: '#content_uz, #content_ru, #content_en',

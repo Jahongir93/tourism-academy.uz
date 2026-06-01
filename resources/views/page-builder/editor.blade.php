@@ -27,7 +27,7 @@
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
 <script>
 window.PageBuilderConfig = {
     apiUrl: '{{ url("/api/page-builder") }}',

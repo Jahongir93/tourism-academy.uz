@@ -313,7 +313,7 @@
             <!-- Testimonial 1 -->
             <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
                 <div class="flex items-center mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Aziz+Karimov&background=10b981&color=fff" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
+                    <img src="{{ url('avatar') }}?name=Aziz+Karimov&background=10b981&color=fff" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
                     <div>
                         <h4 class="font-bold">Aziz Karimov</h4>
                         <p class="text-gray-600 text-sm">Turizm, 2022</p>
@@ -332,7 +332,7 @@
             <!-- Testimonial 2 -->
             <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
                 <div class="flex items-center mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Dilnoza+Saidova&background=10b981&color=fff" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
+                    <img src="{{ url('avatar') }}?name=Dilnoza+Saidova&background=10b981&color=fff" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
                     <div>
                         <h4 class="font-bold">Dilnoza Saidova</h4>
                         <p class="text-gray-600 text-sm">Mehmondo'stlik, 2023</p>
@@ -351,7 +351,7 @@
             <!-- Testimonial 3 -->
             <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
                 <div class="flex items-center mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Jasur+Toshev&background=10b981&color=fff" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
+                    <img src="{{ url('avatar') }}?name=Jasur+Toshev&background=10b981&color=fff" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
                     <div>
                         <h4 class="font-bold">Jasur Toshev</h4>
                         <p class="text-gray-600 text-sm">IT, 2023</p>

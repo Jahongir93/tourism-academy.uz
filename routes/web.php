@@ -1163,6 +1163,15 @@ Route::middleware(['auth'])->get('/extra', function () {
     return view('extra.index');
 })->name('extra.index');
 
+// Local avatar generator (firewall-safe replacement for ui-avatars.com)
+Route::get('/avatar', [App\Http\Controllers\AvatarController::class, 'show'])->name('avatar');
+
+// Fallback file server for storage/app/public — works even if the
+// `storage:link` symlink cannot be created on the server.
+Route::get('/storage/{path}', [App\Http\Controllers\StorageController::class, 'show'])
+    ->where('path', '.*')
+    ->name('storage.file');
+
 // Settings Module Routes
 Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(function () {
     Route::get('/', [App\Http\Controllers\SettingsController::class, 'index'])->name('index');
