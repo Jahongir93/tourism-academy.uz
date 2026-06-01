@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // Older MySQL/MariaDB index key length fix (utf8mb4, InnoDB)
         Schema::defaultStringLength(191);
+
+        // SuperAdmin barcha ruxsatlardan o'tadi (har bir @can/authorize uchun).
+        // Ruxsat nomlarini har bir view bilan sinxron saqlash shart emas.
+        Gate::before(function ($user, $ability) {
+            return method_exists($user, 'hasRole') && $user->hasRole('SuperAdmin') ? true : null;
+        });
 
         // HTTPS majburiy qilish (production muhitda)
         if($this->app->environment('production')) {
