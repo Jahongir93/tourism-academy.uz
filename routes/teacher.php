@@ -56,7 +56,7 @@ Route::prefix('teacher')->middleware(['auth', 'role:teacher|Teacher|superadmin']
         Route::post('/grades', [JournalController::class, 'storeGrades'])->name('store-grades');
         Route::get('/topics', [JournalController::class, 'topics'])->name('topics');
         Route::post('/topics', [JournalController::class, 'storeTopics'])->name('store-topics');
-        Route::get('/export', [JournalController::class, 'export'])->name('export');
+        Route::get('/export', [JournalController::class, 'export'])->name('export-list');
         Route::get('/group/{groupId}', [JournalController::class, 'groupJournal'])->name('group');
         Route::post('/quick-grade', [JournalController::class, 'quickGrade'])->name('quick-grade');
     });
@@ -114,7 +114,7 @@ Route::prefix('teacher')->middleware(['auth', 'role:teacher|Teacher|superadmin']
     Route::prefix('assignments')->name('teacher.assignments.')->group(function () {
         Route::get('/', [AssignmentController::class, 'index'])->name('index');
         Route::get('/create', [AssignmentController::class, 'create'])->name('create');
-        Route::post('/store', [AssignmentController::class, 'store'])->name('store');
+        Route::post('/store', [AssignmentController::class, 'store'])->name('store-form');
         Route::get('/{id}', [AssignmentController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [AssignmentController::class, 'edit'])->name('edit');
         Route::put('/{id}', [AssignmentController::class, 'update'])->name('update');

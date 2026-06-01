@@ -353,10 +353,6 @@ Route::middleware(['auth'])->group(function () {
         });
     });
     
-    Route::prefix('hr')->middleware('role:HR|SuperAdmin')->group(function () {
-        Route::get('/dashboard', [App\Http\Controllers\HR\HRDashboardController::class, 'index'])->name('hr.dashboard');
-    });
-
     Route::prefix('chat-admin')->middleware('role:ChatAdmin|SuperAdmin')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\ChatAdmin\ChatAdminDashboardController::class, 'index'])->name('chat-admin.dashboard');
 
@@ -1303,71 +1299,7 @@ Route::get('/api/next-student-id', function() {
     return response()->json(['student_id' => $studentId]);
 });
 
-// ============================================
-// HR (Kadrlar bo'limi) Routes
-// ============================================
-Route::middleware(['auth', 'role:HR|hr|SuperAdmin|admin'])->prefix('hr')->name('hr.')->group(function () {
-    // Dashboard
-    Route::get('/', [App\Http\Controllers\HRController::class, 'dashboard'])->name('dashboard');
-
-    // Xodimlar
-    Route::prefix('employees')->name('employees.')->group(function () {
-        Route::get('/', [App\Http\Controllers\HRController::class, 'employeesIndex'])->name('index');
-        Route::get('/create', [App\Http\Controllers\HRController::class, 'employeesCreate'])->name('create');
-        Route::post('/', [App\Http\Controllers\HRController::class, 'employeesStore'])->name('store');
-        Route::get('/contracts', [App\Http\Controllers\HRController::class, 'employeesContracts'])->name('contracts');
-        Route::get('/{employee}', [App\Http\Controllers\HRController::class, 'employeesShow'])->name('show');
-        Route::get('/{employee}/edit', [App\Http\Controllers\HRController::class, 'employeesEdit'])->name('edit');
-        Route::put('/{employee}', [App\Http\Controllers\HRController::class, 'employeesUpdate'])->name('update');
-    });
-
-    // Ishga qabul
-    Route::prefix('recruitment')->name('recruitment.')->group(function () {
-        Route::get('/vacancies', [App\Http\Controllers\HRController::class, 'recruitmentVacancies'])->name('vacancies');
-        Route::get('/applications', [App\Http\Controllers\HRController::class, 'recruitmentApplications'])->name('applications');
-        Route::get('/interviews', [App\Http\Controllers\HRController::class, 'recruitmentInterviews'])->name('interviews');
-    });
-
-    // Ta'til / Dam olish
-    Route::prefix('leave')->name('leave.')->group(function () {
-        Route::get('/requests', [App\Http\Controllers\HRController::class, 'leaveRequests'])->name('requests');
-        Route::post('/requests/{leaveRequest}/approve', [App\Http\Controllers\HRController::class, 'leaveApprove'])->name('approve');
-        Route::post('/requests/{leaveRequest}/reject', [App\Http\Controllers\HRController::class, 'leaveReject'])->name('reject');
-        Route::get('/calendar', [App\Http\Controllers\HRController::class, 'leaveCalendar'])->name('calendar');
-        Route::get('/balances', [App\Http\Controllers\HRController::class, 'leaveBalances'])->name('balances');
-    });
-
-    // Davomat
-    Route::prefix('attendance')->name('attendance.')->group(function () {
-        Route::get('/', [App\Http\Controllers\HRController::class, 'attendanceIndex'])->name('index');
-    });
-
-    // Ish haqi
-    Route::prefix('payroll')->name('payroll.')->group(function () {
-        Route::get('/', [App\Http\Controllers\HRController::class, 'payrollIndex'])->name('index');
-    });
-
-    // Treninglar
-    Route::prefix('training')->name('training.')->group(function () {
-        Route::get('/', [App\Http\Controllers\HRController::class, 'trainingIndex'])->name('index');
-    });
-
-    // Hujjatlar
-    Route::prefix('documents')->name('documents.')->group(function () {
-        Route::get('/', [App\Http\Controllers\HRController::class, 'documentsIndex'])->name('index');
-    });
-
-    // Hisobotlar
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/employees', [App\Http\Controllers\HRController::class, 'reportsEmployees'])->name('employees');
-        Route::get('/attendance', [App\Http\Controllers\HRController::class, 'reportsAttendance'])->name('attendance');
-        Route::get('/leave', [App\Http\Controllers\HRController::class, 'reportsLeave'])->name('leave');
-        Route::get('/turnover', [App\Http\Controllers\HRController::class, 'reportsTurnover'])->name('turnover');
-    });
-
-    // Sozlamalar
-    Route::get('/settings', [App\Http\Controllers\HRController::class, 'settings'])->name('settings');
-});
+// HR routes are defined in routes/hr.php (loaded at top via require)
 
 // =============================================================================
 // Vacancy Routes - CMS catch-all dan oldin bo'lishi kerak
