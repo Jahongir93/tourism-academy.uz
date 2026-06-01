@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -42,8 +43,23 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // NULL qiymatlarni bo'sh string/0 ga almashtir — NOT NULL qilishdan oldin
+        DB::statement("UPDATE admission_applications SET passport_series  = ''  WHERE passport_series  IS NULL");
+        DB::statement("UPDATE admission_applications SET passport_number  = ''  WHERE passport_number  IS NULL");
+        DB::statement("UPDATE admission_applications SET jshshir          = ''  WHERE jshshir          IS NULL");
+        DB::statement("UPDATE admission_applications SET region           = ''  WHERE region           IS NULL");
+        DB::statement("UPDATE admission_applications SET district         = ''  WHERE district         IS NULL");
+        DB::statement("UPDATE admission_applications SET address          = ''  WHERE address          IS NULL");
+        DB::statement("UPDATE admission_applications SET education_type   = 'school' WHERE education_type  IS NULL");
+        DB::statement("UPDATE admission_applications SET education_name   = ''  WHERE education_name   IS NULL");
+        DB::statement("UPDATE admission_applications SET graduation_year  = 0   WHERE graduation_year  IS NULL");
+        DB::statement("UPDATE admission_applications SET education_form   = 'kunduzgi' WHERE education_form IS NULL");
+        DB::statement("UPDATE admission_applications SET education_language = 'uz' WHERE education_language IS NULL");
+        DB::statement("UPDATE admission_applications SET photo_path       = ''  WHERE photo_path       IS NULL");
+        DB::statement("UPDATE admission_applications SET passport_copy_path = '' WHERE passport_copy_path IS NULL");
+        DB::statement("UPDATE admission_applications SET diploma_copy_path  = '' WHERE diploma_copy_path  IS NULL");
+
         Schema::table('admission_applications', function (Blueprint $table) {
-            // Revert fields back to NOT NULL
             $table->string('passport_series', 2)->nullable(false)->change();
             $table->string('passport_number', 7)->nullable(false)->change();
             $table->string('jshshir', 14)->nullable(false)->change();
@@ -62,7 +78,6 @@ return new class extends Migration
             $table->string('diploma_copy_path')->nullable(false)->change();
         });
 
-        // Re-add unique constraint on jshshir
         Schema::table('admission_applications', function (Blueprint $table) {
             $table->unique('jshshir');
         });
