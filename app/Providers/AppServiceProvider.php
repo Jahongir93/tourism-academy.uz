@@ -56,8 +56,10 @@ class AppServiceProvider extends ServiceProvider
         // Route model binding for library books
         Route::model('book', LmsLibraryBook::class);
 
-        // Share template helper with all views
-        View::share('activeTemplate', TemplateHelper::getActiveTemplate());
+        // Share template helper with all views (skip during CLI/artisan commands)
+        if (!$this->app->runningInConsole()) {
+            View::share('activeTemplate', TemplateHelper::getActiveTemplate());
+        }
 
         // Blade directive for template-specific content
         Blade::directive('template', function ($expression) {

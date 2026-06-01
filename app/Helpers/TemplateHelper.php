@@ -18,8 +18,13 @@ class TemplateHelper
     public static function getActiveTemplate(): string
     {
         return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
-            $setting = CmsSetting::where('key', 'active_template')->first();
-            return $setting ? $setting->value : 'classic';
+            try {
+                $setting = CmsSetting::where('key', 'active_template')->first();
+                return $setting ? $setting->value : 'classic';
+            } catch (\Throwable $e) {
+                // Table may not exist yet (e.g. during migrations)
+                return 'classic';
+            }
         });
     }
 
