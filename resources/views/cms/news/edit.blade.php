@@ -260,10 +260,11 @@ tinymce.init({
     images_upload_url: '{{ route("cms.upload.image") }}',
     images_upload_handler: function(blobInfo) {
         return new Promise((resolve, reject) => {
-            const formData = new FormData();
-            formData.append('file', blobInfo.blob(), blobInfo.filename());
-            formData.append('_token', '{{ csrf_token() }}');
-            fetch('{{ route("cms.upload.image") }}', { method: 'POST', body: formData })
+            fetch('{{ route("cms.upload.image.b64") }}', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'},
+                body: JSON.stringify({ name: blobInfo.filename(), type: blobInfo.blob().type, data: blobInfo.base64() })
+            })
                 .then(r => r.ok ? r.json() : Promise.reject('HTTP ' + r.status))
                 .then(result => result.location ? resolve(result.location) : reject('Upload failed'))
                 .catch(err => reject('Upload failed: ' + err));

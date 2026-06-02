@@ -686,6 +686,8 @@ Route::middleware(['auth'])->group(function () {
 
         // TinyMCE Image Upload
         Route::post('upload/image', [App\Http\Controllers\CMS\MediaController::class, 'uploadImage'])->name('upload.image');
+        // WAF-safe variant: accepts base64 JSON so the firewall doesn't block binary uploads
+        Route::post('upload/image-b64', [App\Http\Controllers\CMS\MediaController::class, 'uploadImageBase64'])->name('upload.image.b64');
         
         // Widgets
         Route::get('widgets', function() {

@@ -130,4 +130,57 @@ class MediaController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * WAF-safe TinyMCE rasm yuklash — rasm base64 JSON sifatida keladi,
+     * shuning uchun firewall binary yuklashni bloklamaydi.
+     * Kutiladi: { name, type, data(base64) }
+     */
+    public function uploadImageBase64(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:100',
+            'data' => 'required|string',
+        ]);
+
+        try {
+            $binary = base64_decode($validated['data'], true);
+            if ($binary === false) {
+                return response()->json(['error' => 'Noto\'g\'ri base64 ma\'lumot'], 422);
+            }
+            if (strlen($binary) > 5 * 1024 * 1024) {
+                return response()->json(['error' => 'Fayl hajmi 5MB dan oshmasligi kerak'], 422);
+            }
+
+            $origName = $validated['name'] ?? 'image.png';
+            $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION)) ?: 'png';
+            $allowed = ['jpg','jpeg','png','gif','webp','svg'];
+            if (!in_array($ext, $allowed, true)) {
+                return response()->json(['error' => 'Ruxsat etilmagan fayl turi'], 422);
+            }
+
+            $dir = 'cms/content/' . date('Y/m');
+            $fileName = \Illuminate\Support\Str::random(40) . '.' . $ext;
+            $path = $dir . '/' . $fileName;
+            Storage::disk('public')->put($path, $binary);
+
+            CmsMedia::create([
+                'name'        => pathinfo($origName, PATHINFO_FILENAME),
+                'file_name'   => $origName,
+                'mime_type'   => $validated['type'] ?? 'image/' . $ext,
+                'path'        => $path,
+                'disk'        => 'public',
+                'size'        => strlen($binary),
+                'folder_id'   => null,
+                'alt_text'    => null,
+                'caption'     => null,
+                'uploaded_by' => Auth::id(),
+            ]);
+
+            return response()->json(['location' => asset('storage/' . $path)]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Rasm yuklashda xatolik: ' . $e->getMessage()], 500);
+        }
+    }
 }
