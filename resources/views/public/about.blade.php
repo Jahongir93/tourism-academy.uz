@@ -485,7 +485,7 @@
     <div class="container">
         <div class="history-content">
             <div class="history-image" data-aos="fade-right">
-                <img src="{{ asset('images/academy-building.jpg') }}" alt="Akademiya binosi" onerror="this.src='https://images.unsplash.com/photo-1562774053-701939374585?w=600'">
+                <img src="{{ asset('images/academy-building.jpg') }}" alt="Akademiya binosi" onerror="this.src='{{ asset('images/ext/5b2bbb98509a3d4f.jpg') }}'">
             </div>
             <div class="history-text" data-aos="fade-left">
                 <h3>Akademiya Tarixi</h3>

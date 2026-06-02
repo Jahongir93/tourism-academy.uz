@@ -660,7 +660,7 @@
                 </div>
                 <div class="col-lg-6" data-aos="fade-left">
                     <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600" 
+                        <img src="{{ asset('images/ext/placeholder.jpg') }}" 
                              alt="Faculty" class="img-fluid rounded-4 shadow-lg">
                         <div class="floating-card" style="position: absolute; bottom: -20px; right: -20px; width: 150px; height: 100px;">
                             <div class="p-3 text-center">

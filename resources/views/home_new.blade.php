@@ -7,7 +7,7 @@
 <section class="relative h-screen flex items-center justify-center overflow-hidden">
     <!-- Background Image with Overlay -->
     <div class="absolute inset-0">
-        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920" alt="University" class="w-full h-full object-cover">
+        <img src="{{ asset('images/ext/placeholder.jpg') }}" alt="University" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-br from-black/70 via-emerald-900/50 to-teal-900/60"></div>
     </div>
 
@@ -48,7 +48,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- News Card 1 -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover">
-                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=600" alt="News" class="w-full h-48 object-cover">
+                <img src="{{ asset('images/ext/763130cac43032c7.jpg') }}" alt="News" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <span class="text-emerald-600 text-sm font-semibold">15-Dekabr, 2024</span>
                     <h3 class="text-xl font-bold mt-2 mb-3">Xalqaro ilmiy konferensiya</h3>
@@ -61,7 +61,7 @@
 
             <!-- News Card 2 -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600" alt="News" class="w-full h-48 object-cover">
+                <img src="{{ asset('images/ext/555f626738a84761.jpg') }}" alt="News" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <span class="text-emerald-600 text-sm font-semibold">10-Dekabr, 2024</span>
                     <h3 class="text-xl font-bold mt-2 mb-3">Yangi o'quv korpusi ochildi</h3>
@@ -74,7 +74,7 @@
 
             <!-- News Card 3 -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover">
-                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600" alt="News" class="w-full h-48 object-cover">
+                <img src="{{ asset('images/ext/f50a06dbfa3cdec0.jpg') }}" alt="News" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <span class="text-emerald-600 text-sm font-semibold">5-Dekabr, 2024</span>
                     <h3 class="text-xl font-bold mt-2 mb-3">Startup musobaqasi g'oliblari</h3>
@@ -380,22 +380,22 @@
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div class="col-span-2 row-span-2">
-                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
+                <img src="{{ asset('images/ext/9229f87e63308cf0.jpg') }}" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
             </div>
             <div>
-                <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
+                <img src="{{ asset('images/ext/92a755e08645cd71.jpg') }}" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
             </div>
             <div>
-                <img src="https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?w=400" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
+                <img src="{{ asset('images/ext/2563486dc9f24b73.jpg') }}" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
             </div>
             <div>
-                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=400" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
+                <img src="{{ asset('images/ext/99562c0638126f8f.jpg') }}" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
             </div>
             <div>
-                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=400" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
+                <img src="{{ asset('images/ext/1928825cab4f7cdf.jpg') }}" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
             </div>
             <div class="col-span-2">
-                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=800" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
+                <img src="{{ asset('images/ext/eaf642e2041a4a7c.jpg') }}" alt="Gallery" class="w-full h-full object-cover rounded-2xl shadow-xl hover:shadow-2xl transition">
             </div>
         </div>
     </div>

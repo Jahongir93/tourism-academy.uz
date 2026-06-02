@@ -217,7 +217,7 @@
                     <div class="mb-3">
                         <img src="{{ asset($news->featured_image) }}" alt="{{ $news->title_uz }}"
                              class="img-fluid rounded" id="current_image"
-                             onerror="this.onerror=null;this.src='https://via.placeholder.com/800x450/e5e7eb/6b7280?text=No+Image'">
+                             onerror="this.onerror=null;this.src='{{ asset('images/ext/placeholder.jpg') }}'">
                     </div>
                     @endif
                     <div class="file-drop-area">

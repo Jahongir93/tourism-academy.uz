@@ -291,7 +291,7 @@ function addElement(type) {
             elementHtml = '<div class="pb-element-wrapper" data-element-type="Button"><button class="btn btn-primary">Button</button></div>';
             break;
         case 'image':
-            elementHtml = '<div class="pb-element-wrapper" data-element-type="Image"><img src="https://via.placeholder.com/800x400" class="img-fluid"></div>';
+            elementHtml = '<div class="pb-element-wrapper" data-element-type="Image"><img src="{{ asset('images/ext/placeholder.jpg') }}" class="img-fluid"></div>';
             break;
         case 'divider':
             elementHtml = '<div class="pb-element-wrapper" data-element-type="Divider"><hr></div>';

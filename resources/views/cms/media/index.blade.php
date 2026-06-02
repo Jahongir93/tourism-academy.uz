@@ -38,7 +38,7 @@
                     @if($item->is_image)
                         <img src="{{ asset('storage/' . $item->path) }}" class="media-thumb"
                              alt="{{ $item->alt_text ?? $item->name }}"
-                             onerror="this.onerror=null;this.src='https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Image+Error'">
+                             onerror="this.onerror=null;this.src='{{ asset('images/ext/placeholder.jpg') }}'">
                     @elseif($item->is_pdf)
                         <div class="media-icon-wrap" style="background:rgba(244,63,94,.06)">
                             <i class="fas fa-file-pdf fa-3x" style="color:var(--c-rose)"></i>

@@ -619,7 +619,7 @@
                         @if($related->featured_image)
                             <img src="{{ asset($related->featured_image) }}" alt="{{ $related->title_uz }}" class="related-card-image">
                         @else
-                            <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&h=200&fit=crop"
+                            <img src="{{ asset('images/ext/dddd05ac019ad8bf.jpg') }}"
                                  alt="News" class="related-card-image">
                         @endif
                         <div class="related-card-body">

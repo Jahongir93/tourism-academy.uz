@@ -33,9 +33,9 @@
 
     // Default hero images
     $defaultSlideImages = [
-        1 => 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920',
-        2 => 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920',
-        3 => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920',
+        1 => '{{ asset('images/ext/placeholder.jpg') }}',
+        2 => '{{ asset('images/ext/9b82ede115ba6c5b.jpg') }}',
+        3 => '{{ asset('images/ext/d596ce6552154b88.jpg') }}',
     ];
 
     // Get slide images from CMS or use defaults
@@ -1232,7 +1232,7 @@
                         @if($news->featured_image)
                             <img src="{{ asset($news->featured_image) }}" alt="{{ $news->title_uz }}">
                         @else
-                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600" alt="{{ $news->title_uz }}">
+                            <img src="{{ asset('images/ext/placeholder.jpg') }}" alt="{{ $news->title_uz }}">
                         @endif
                     </div>
                     <div class="news-card-content">
@@ -1257,7 +1257,7 @@
                 @for($i = 0; $i < 4; $i++)
                 <div class="news-card" data-aos="fade-up" data-aos-delay="{{ ($i + 1) * 100 }}">
                     <div class="news-card-image">
-                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600" alt="News">
+                        <img src="{{ asset('images/ext/placeholder.jpg') }}" alt="News">
                     </div>
                     <div class="news-card-content">
                         <div class="news-card-badges">
@@ -1309,7 +1309,7 @@
                             @endphp
                             <img src="{{ $evtImg }}" alt="{{ $event->title_uz }}">
                         @else
-                            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600" alt="{{ $event->title_uz }}">
+                            <img src="{{ asset('images/ext/f50a06dbfa3cdec0.jpg') }}" alt="{{ $event->title_uz }}">
                         @endif
                         <span class="event-badge">Events</span>
                     </div>
@@ -1329,7 +1329,7 @@
                 @for($i = 0; $i < 4; $i++)
                 <div class="event-card" data-aos="fade-up" data-aos-delay="{{ ($i + 1) * 100 }}">
                     <div class="event-card-image">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600" alt="Event">
+                        <img src="{{ asset('images/ext/f50a06dbfa3cdec0.jpg') }}" alt="Event">
                         <span class="event-badge">Events</span>
                     </div>
                     <div class="event-card-content">
@@ -1366,10 +1366,10 @@
         <div class="academy-grid">
             @php
                 $galleryImages = [
-                    'https://images.unsplash.com/photo-1562774053-701939374585?w=600',
-                    'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600',
-                    'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600',
-                    'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600'
+                    '{{ asset('images/ext/5b2bbb98509a3d4f.jpg') }}',
+                    '{{ asset('images/ext/3b08bcc7548c04b2.jpg') }}',
+                    '{{ asset('images/ext/0da77ca836ce7d6f.jpg') }}',
+                    '{{ asset('images/ext/08585610f20064c3.jpg') }}'
                 ];
             @endphp
             @foreach($galleryImages as $index => $img)

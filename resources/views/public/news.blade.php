@@ -468,14 +468,14 @@
                             @if(($featured['type'] ?? 'news') === 'event')
                                 <img src="{{ asset('storage/' . $featured['image']) }}"
                                      alt="{{ $featured['title'] }}"
-                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600';">
+                                     onerror="this.onerror=null; this.src='{{ asset('images/ext/f50a06dbfa3cdec0.jpg') }}';">
                             @else
                                 <img src="{{ asset($featured['image']) }}"
                                      alt="{{ $featured['title'] }}"
-                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600';">
+                                     onerror="this.onerror=null; this.src='{{ asset('images/ext/placeholder.jpg') }}';">
                             @endif
                         @else
-                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600" alt="{{ $featured['title'] }}">
+                            <img src="{{ asset('images/ext/placeholder.jpg') }}" alt="{{ $featured['title'] }}">
                         @endif
 
                         @if(($featured['type'] ?? 'news') === 'event')
@@ -524,14 +524,14 @@
                             @if(($item['type'] ?? 'news') === 'event')
                                 <img src="{{ asset('storage/' . $item['image']) }}"
                                      alt="{{ $item['title'] }}"
-                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600';">
+                                     onerror="this.onerror=null; this.src='{{ asset('images/ext/f50a06dbfa3cdec0.jpg') }}';">
                             @else
                                 <img src="{{ asset($item['image']) }}"
                                      alt="{{ $item['title'] }}"
-                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600';">
+                                     onerror="this.onerror=null; this.src='{{ asset('images/ext/placeholder.jpg') }}';">
                             @endif
                         @else
-                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600" alt="{{ $item['title'] }}">
+                            <img src="{{ asset('images/ext/placeholder.jpg') }}" alt="{{ $item['title'] }}">
                         @endif
 
                         @if(($item['type'] ?? 'news') === 'event')

@@ -678,7 +678,7 @@
     <div class="container">
         <div class="history-content">
             <div class="history-image" data-aos="fade-right">
-                <img src="{{ asset('images/academy-building.jpg') }}" alt="Akademiya binosi" onerror="this.src='https://images.unsplash.com/photo-1562774053-701939374585?w=800'">
+                <img src="{{ asset('images/academy-building.jpg') }}" alt="Akademiya binosi" onerror="this.src='{{ asset('images/ext/eaf642e2041a4a7c.jpg') }}'">
             </div>
             <div class="history-text" data-aos="fade-left">
                 <h3>{{ $getContent('about_history_title', 'Bizning tarix') }}</h3>
