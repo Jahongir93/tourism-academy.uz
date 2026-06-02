@@ -1,5 +1,20 @@
+# ──────────────────────────────────────────────────────────────
+# Document root loyiha ildizida bo'lganda ishlatiladi.
+# ENG TO'G'RISI: hosting document root'ini /public ga o'tkazib,
+# bu faylni o'chirish. Quyidagi himoya — root qolgan holat uchun.
+# ──────────────────────────────────────────────────────────────
+
+# Maxfiy fayl/papkalarni brauzerdan butunlay yopish
+<FilesMatch "^\.env|composer\.(json|lock)|package\.json|artisan$">
+    Require all denied
+</FilesMatch>
+
+RedirectMatch 403 ^/(\.env|\.git|vendor|storage|bootstrap|app|config|database|routes|resources|tests)(/|$)
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^$ public/ [L]
+
+    # Allaqachon public/ ichidagi so'rovni qayta yo'naltirmaslik (loop oldini olish)
+    RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
