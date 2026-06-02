@@ -43,7 +43,10 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            // Stored INSIDE the web root so files are served directly from
+            // /public/storage — no symlink, no access outside /public.
+            // (Server only allows /public; this avoids the firewall/symlink issue.)
+            'root' => public_path('storage'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
@@ -76,8 +79,7 @@ return [
     |
     */
 
-    'links' => [
-        public_path('storage') => storage_path('app/public'),
-    ],
+    // No symbolic links — uploads live directly in public/storage.
+    'links' => [],
 
 ];

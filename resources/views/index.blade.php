@@ -197,7 +197,7 @@
             <div class="swiper-wrapper">
                 <!-- Slide 1 -->
                 <div class="swiper-slide relative">
-                    <div class="h-[600px] bg-cover bg-center" style="background-image: url('{{ asset('images/ext/placeholder.jpg') }}');">
+                    <div class="h-[600px] bg-cover bg-center" style="background-image: url(asset('images/ext/placeholder.jpg'));">
                         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
                         <div class="relative h-full flex items-center">
                             <div class="container mx-auto px-4">
@@ -220,7 +220,7 @@
 
                 <!-- Slide 2 -->
                 <div class="swiper-slide relative">
-                    <div class="h-[600px] bg-cover bg-center" style="background-image: url('{{ asset('images/ext/placeholder.jpg') }}');">
+                    <div class="h-[600px] bg-cover bg-center" style="background-image: url(asset('images/ext/placeholder.jpg'));">
                         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
                         <div class="relative h-full flex items-center">
                             <div class="container mx-auto px-4">
@@ -238,7 +238,7 @@
 
                 <!-- Slide 3 -->
                 <div class="swiper-slide relative">
-                    <div class="h-[600px] bg-cover bg-center" style="background-image: url('{{ asset('images/ext/placeholder.jpg') }}');">
+                    <div class="h-[600px] bg-cover bg-center" style="background-image: url(asset('images/ext/placeholder.jpg'));">
                         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
                         <div class="relative h-full flex items-center">
                             <div class="container mx-auto px-4">

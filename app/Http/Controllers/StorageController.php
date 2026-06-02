@@ -27,14 +27,20 @@ class StorageController extends Controller
             abort(404);
         }
 
-        $full = storage_path('app/public/' . $path);
+        // New location (inside public/) first, then the legacy storage/app/public
+        $candidates = [
+            public_path('storage/' . $path),
+            storage_path('app/public/' . $path),
+        ];
 
-        if (!File::exists($full) || !File::isFile($full)) {
-            abort(404);
+        foreach ($candidates as $full) {
+            if (File::exists($full) && File::isFile($full)) {
+                return response()->file($full, [
+                    'Cache-Control' => 'public, max-age=2592000',
+                ]);
+            }
         }
 
-        return response()->file($full, [
-            'Cache-Control' => 'public, max-age=2592000',
-        ]);
+        abort(404);
     }
 }

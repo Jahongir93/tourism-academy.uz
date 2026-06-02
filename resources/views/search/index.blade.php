@@ -270,7 +270,7 @@
                     @foreach($results['news'] as $news)
                         <div class="result-card">
                             <a href="{{ route('news.show', $news->slug) }}">
-                                <div class="result-image" style="background-image: url('{{ $news->featured_image ? asset($news->featured_image) : '{{ asset('images/ext/placeholder.jpg') }}' }}')"></div>
+                                <div class="result-image" style="background-image: url('{{ $news->featured_image ? asset($news->featured_image) : asset('images/ext/placeholder.jpg') }}')"></div>
                                 <div class="result-content">
                                     <span class="result-type news">
                                         <i class="fas fa-newspaper"></i> Yangilik
@@ -293,7 +293,7 @@
                     @foreach($results['events'] as $event)
                         <div class="result-card">
                             <a href="{{ route('news.show', $event->slug ?? $event->id) }}">
-                                <div class="result-image" style="background-image: url('{{ $event->featured_image ? asset('storage/' . $event->featured_image) : '{{ asset('images/ext/placeholder.jpg') }}' }}')"></div>
+                                <div class="result-image" style="background-image: url('{{ $event->featured_image ? asset('storage/' . $event->featured_image) : asset('images/ext/placeholder.jpg') }}')"></div>
                                 <div class="result-content">
                                     <span class="result-type event">
                                         <i class="fas fa-calendar-alt"></i> Tadbir
@@ -322,7 +322,7 @@
                             <div class="col-md-6 col-lg-4 mb-4">
                                 <div class="result-card">
                                     <a href="{{ route('teachers') }}#teacher-{{ $teacher->id }}" style="flex-direction: column;">
-                                        <div class="result-image" style="height: 200px; background-image: url('{{ $teacher->photo_url ?: '{{ asset('images/ext/placeholder.jpg') }}' . urlencode(mb_substr($teacher->first_name, 0, 1) . mb_substr($teacher->last_name, 0, 1)) }}')"></div>
+                                        <div class="result-image" style="height: 200px; background-image: url('{{ $teacher->photo_url ?: asset('images/ext/placeholder.jpg') . urlencode(mb_substr($teacher->first_name, 0, 1) . mb_substr($teacher->last_name, 0, 1)) }}')"></div>
                                         <div class="result-content text-center">
                                             <span class="result-type teacher">
                                                 <i class="fas fa-user-tie"></i> O'qituvchi

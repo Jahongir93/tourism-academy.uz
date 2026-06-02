@@ -18,9 +18,13 @@
 /storage/framework/views/*
 /storage/logs/*
 
-# ── Uploaded user files (serverda o'zi bor) ───────────────────
+# ── Uploaded user files ───────────────────────────────────────
+# Uploads live in public/storage now. Ignore everything there EXCEPT the
+# public CMS content (news/events/homepage/logos) so it ships via git.
+# Personal docs (admission/students/employees) stay ignored for privacy.
 /storage/app/public/
-/public/storage
+/public/storage/*
+!/public/storage/cms
 
 # ── System & IDE ───────────────────────────────────────────────
 .DS_Store

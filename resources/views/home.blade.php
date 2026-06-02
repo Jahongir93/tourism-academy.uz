@@ -33,9 +33,9 @@
 
     // Default hero images
     $defaultSlideImages = [
-        1 => '{{ asset('images/ext/placeholder.jpg') }}',
-        2 => '{{ asset('images/ext/9b82ede115ba6c5b.jpg') }}',
-        3 => '{{ asset('images/ext/d596ce6552154b88.jpg') }}',
+        1 => asset('images/ext/placeholder.jpg'),
+        2 => asset('images/ext/9b82ede115ba6c5b.jpg'),
+        3 => asset('images/ext/d596ce6552154b88.jpg'),
     ];
 
     // Get slide images from CMS or use defaults
@@ -1366,10 +1366,10 @@
         <div class="academy-grid">
             @php
                 $galleryImages = [
-                    '{{ asset('images/ext/5b2bbb98509a3d4f.jpg') }}',
-                    '{{ asset('images/ext/3b08bcc7548c04b2.jpg') }}',
-                    '{{ asset('images/ext/0da77ca836ce7d6f.jpg') }}',
-                    '{{ asset('images/ext/08585610f20064c3.jpg') }}'
+                    asset('images/ext/5b2bbb98509a3d4f.jpg'),
+                    asset('images/ext/3b08bcc7548c04b2.jpg'),
+                    asset('images/ext/0da77ca836ce7d6f.jpg'),
+                    asset('images/ext/08585610f20064c3.jpg')
                 ];
             @endphp
             @foreach($galleryImages as $index => $img)
