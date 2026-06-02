@@ -52,7 +52,8 @@ class UserManagementController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'user_type' => 'required|in:uzbek,foreigner',
             'status' => 'required|in:active,inactive,suspended',
-            'role' => 'required|exists:roles,name'
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
         ]);
 
         // Ensure either email or phone is provided
@@ -70,7 +71,7 @@ class UserManagementController extends Controller
             'phone_verified_at' => !empty($validated['phone']) ? now() : null,
         ]);
 
-        $user->assignRole($validated['role']);
+        $user->syncRoles($validated['roles']);
 
         // BUGFIX #57: Increment rate limit counter
         cache()->put($rateLimitKey, (cache()->get($rateLimitKey, 0) + 1), now()->addHour());
@@ -109,7 +110,8 @@ class UserManagementController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'user_type' => 'required|in:uzbek,foreigner',
             'status' => 'required|in:active,inactive,suspended',
-            'role' => 'required|exists:roles,name'
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
         ]);
 
         // Ensure either email or phone is provided
@@ -131,7 +133,7 @@ class UserManagementController extends Controller
             ]);
         }
 
-        $user->syncRoles([$validated['role']]);
+        $user->syncRoles($validated['roles']);
 
         // BUGFIX #57: Increment rate limit counter
         cache()->put($rateLimitKey, (cache()->get($rateLimitKey, 0) + 1), now()->addHour());

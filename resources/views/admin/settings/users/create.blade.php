@@ -44,18 +44,21 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="role" class="form-label">Rol <span class="text-danger">*</span></label>
-                    <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
-                        <option value="">Rol tanlang...</option>
+                    <label class="form-label">Rollar <span class="text-danger">*</span> <small class="text-muted">(bir nechta tanlash mumkin)</small></label>
+                    <div class="row g-2 @error('roles') is-invalid @enderror" style="border:1px solid var(--c-border);border-radius:var(--r-sm);padding:12px;">
                         @foreach($roles as $role)
-                            <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
-                                {{ $role->name }}
-                            </option>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="roles[]"
+                                           value="{{ $role->name }}" id="role_{{ $role->id }}"
+                                           {{ collect(old('roles', []))->contains($role->name) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="role_{{ $role->id }}">{{ $role->name }}</label>
+                                </div>
+                            </div>
                         @endforeach
-                    </select>
-                    @error('role')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    </div>
+                    @error('roles')<div class="text-danger mt-1" style="font-size:13px">{{ $message }}</div>@enderror
+                    @error('roles.*')<div class="text-danger mt-1" style="font-size:13px">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="d-flex gap-2">

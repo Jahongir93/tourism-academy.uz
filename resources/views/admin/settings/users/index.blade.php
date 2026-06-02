@@ -46,11 +46,11 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    @if($user->roles->count())
-                                        <span class="badge bg-primary">{{ $user->roles->first()->name }}</span>
-                                    @else
+                                    @forelse($user->roles as $r)
+                                        <span class="badge {{ $r->name === 'SuperAdmin' ? 'bg-danger' : 'bg-primary' }} mb-1">{{ $r->name }}</span>
+                                    @empty
                                         <span class="badge bg-secondary">Rol yo'q</span>
-                                    @endif
+                                    @endforelse
                                 </td>
                                 <td>{{ $user->created_at->format('d.m.Y H:i') }}</td>
                                 <td>
