@@ -70,8 +70,10 @@ class NewsController extends Controller
             $validated['slug'] = Str::slug($validated['title_uz']);
         }
 
-        // Upload featured image
-        if ($request->hasFile('featured_image')) {
+        // Featured image: AJAX-uploaded path (WAF-safe) yoki to'g'ridan-to'g'ri fayl
+        if ($request->filled('featured_image_path')) {
+            $validated['featured_image'] = ltrim($request->input('featured_image_path'), '/');
+        } elseif ($request->hasFile('featured_image')) {
             $file = $request->file('featured_image');
             $dir = public_path('images/news');
             if (!is_dir($dir)) mkdir($dir, 0775, true);
@@ -153,8 +155,10 @@ class NewsController extends Controller
             'published_at' => 'nullable|date'
         ]);
 
-        // Upload featured image
-        if ($request->hasFile('featured_image')) {
+        // Featured image: AJAX-uploaded path (WAF-safe) yoki to'g'ridan-to'g'ri fayl
+        if ($request->filled('featured_image_path')) {
+            $validated['featured_image'] = ltrim($request->input('featured_image_path'), '/');
+        } elseif ($request->hasFile('featured_image')) {
             $file = $request->file('featured_image');
             $dir = public_path('images/news');
             if (!is_dir($dir)) mkdir($dir, 0775, true);

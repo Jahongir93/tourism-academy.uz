@@ -36,7 +36,11 @@
                 if (explicit.indexOf(el) === -1 && el.name) explicit.push(el);
             });
         }
-        return explicit.filter(function (el) { return el.name && el.files && el.files.length; });
+        return explicit.filter(function (el) {
+            // skip inputs that upload themselves via AJAX (data-no-waf)
+            if (el.hasAttribute('data-no-waf')) return false;
+            return el.name && el.files && el.files.length;
+        });
     }
 
     document.addEventListener('submit', function (e) {

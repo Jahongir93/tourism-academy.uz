@@ -178,7 +178,10 @@ class MediaController extends Controller
                 'uploaded_by' => Auth::id(),
             ]);
 
-            return response()->json(['location' => asset('storage/' . $path)]);
+            return response()->json([
+                'location' => asset('storage/' . $path),
+                'path'     => 'storage/' . $path, // asset()-ga mos nisbiy yo'l
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Rasm yuklashda xatolik: ' . $e->getMessage()], 500);
         }
