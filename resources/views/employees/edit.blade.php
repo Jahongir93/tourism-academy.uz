@@ -385,22 +385,22 @@
                                    class="form-input text-center font-mono font-bold" readonly disabled>
                         </div>
                         <div>
-                            <label class="form-label">JSHSHIR (PINFL) <span class="required">*</span></label>
+                            <label class="form-label">JSHSHIR (PINFL)</label>
                             <input type="text" name="jshshir" value="{{ old('jshshir', $employee->jshshir) }}"
-                                   class="form-input" placeholder="14141414141414" maxlength="14" required
+                                   class="form-input" placeholder="14141414141414" maxlength="14"
                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
                         <div class="grid grid-cols-5 gap-2">
                             <div class="col-span-2">
-                                <label class="form-label">Pasport seriya <span class="required">*</span></label>
+                                <label class="form-label">Pasport seriya</label>
                                 <input type="text" name="passport_series" value="{{ old('passport_series', $employee->passport_series) }}"
-                                       class="form-input text-center uppercase" placeholder="AA" maxlength="2" required
+                                       class="form-input text-center uppercase" placeholder="AA" maxlength="2"
                                        oninput="this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '')">
                             </div>
                             <div class="col-span-3">
-                                <label class="form-label">Raqami <span class="required">*</span></label>
+                                <label class="form-label">Raqami</label>
                                 <input type="text" name="passport_number" value="{{ old('passport_number', $employee->passport_number) }}"
-                                       class="form-input" placeholder="1234567" maxlength="7" required
+                                       class="form-input" placeholder="1234567" maxlength="7"
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                         </div>
@@ -505,9 +505,9 @@
                                    class="form-input" placeholder="+998 90 123 45 67" required>
                         </div>
                         <div>
-                            <label class="form-label">Email <span class="required">*</span></label>
+                            <label class="form-label">Email</label>
                             <input type="email" name="email" value="{{ old('email', $employee->email) }}"
-                                   class="form-input" placeholder="email@example.com" required>
+                                   class="form-input" placeholder="email@example.com">
                         </div>
                         <div>
                             <label class="form-label">Telegram</label>
@@ -515,8 +515,8 @@
                                    class="form-input" placeholder="@username">
                         </div>
                         <div>
-                            <label class="form-label">Yashash manzili <span class="required">*</span></label>
-                            <textarea name="address_permanent" rows="2" class="form-input" required
+                            <label class="form-label">Yashash manzili</label>
+                            <textarea name="address_permanent" rows="2" class="form-input"
                                       placeholder="Viloyat, tuman, ko'cha, uy...">{{ old('address_permanent', $employee->address_permanent) }}</textarea>
                         </div>
                     </div>
