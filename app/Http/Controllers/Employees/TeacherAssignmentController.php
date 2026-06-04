@@ -98,8 +98,8 @@ class TeacherAssignmentController extends Controller
             // Ensure academic_year_id is a valid ID from academic_years table
             $academicYear = \App\Models\AcademicYear::find($validated['academic_year_id']);
             if (!$academicYear) {
-                // Maybe it's a year value (like 2025), try to find by name
-                $academicYear = \App\Models\AcademicYear::where('name', 'LIKE', $validated['academic_year_id'] . '%')->first();
+                // Maybe it's a year value (like 2025), try to find by year
+                $academicYear = \App\Models\AcademicYear::where('year', 'LIKE', $validated['academic_year_id'] . '%')->first();
                 if (!$academicYear) {
                     $academicYear = \App\Models\AcademicYear::where('is_current', true)->first();
                 }

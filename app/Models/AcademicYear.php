@@ -9,12 +9,14 @@ class AcademicYear extends Model
 {
     use HasFactory;
 
+    // NOTE: the real column is `year`. `name` is exposed as an alias via the
+    // accessor/mutator below so existing code using ->name keeps working.
     protected $fillable = [
+        'year',
         'name',
         'start_date',
         'end_date',
         'is_current',
-        'description'
     ];
 
     protected $casts = [
@@ -22,6 +24,17 @@ class AcademicYear extends Model
         'end_date' => 'date',
         'is_current' => 'boolean',
     ];
+
+    // `name` <-> `year` alias (table has no `name` column)
+    public function getNameAttribute(): ?string
+    {
+        return $this->attributes['year'] ?? null;
+    }
+
+    public function setNameAttribute($value): void
+    {
+        $this->attributes['year'] = $value;
+    }
 
     public static function current()
     {
@@ -49,7 +62,7 @@ class AcademicYear extends Model
     public static function setCurrent($name)
     {
         static::where('is_current', true)->update(['is_current' => false]);
-        return static::where('name', $name)->update(['is_current' => true]);
+        return static::where('year', $name)->update(['is_current' => true]);
     }
 
     public function semesters()
