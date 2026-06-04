@@ -543,8 +543,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="form-label">Lavozim <span class="required">*</span></label>
-                                <select name="position_id" class="form-input" required>
+                                <label class="form-label">Lavozim</label>
+                                <select name="position_id" class="form-input">
                                     <option value="">Tanlang</option>
                                     @foreach($positions ?? [] as $position)
                                         <option value="{{ $position->id }}" {{ old('position_id', $employee->employmentDetail?->position_id) == $position->id ? 'selected' : '' }}>
@@ -580,8 +580,8 @@
                         </div>
                         <div class="grid grid-cols-3 gap-3">
                             <div>
-                                <label class="form-label">Stavka <span class="required">*</span></label>
-                                <select name="stavka" class="form-input" required>
+                                <label class="form-label">Stavka</label>
+                                <select name="stavka" class="form-input">
                                     <option value="">-</option>
                                     <option value="1" {{ old('stavka', $employee->employmentDetail?->stavka) == '1' ? 'selected' : '' }}>1.0</option>
                                     <option value="0.75" {{ old('stavka', $employee->employmentDetail?->stavka) == '0.75' ? 'selected' : '' }}>0.75</option>
@@ -590,18 +590,18 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="form-label">Shartnoma <span class="required">*</span></label>
-                                <select name="contract_type" class="form-input" required>
+                                <label class="form-label">Shartnoma</label>
+                                <select name="contract_type" class="form-input">
                                     <option value="">-</option>
                                     <option value="muddatsiz" {{ old('contract_type', $employee->employmentDetail?->contract_type) == 'muddatsiz' ? 'selected' : '' }}>Muddatsiz</option>
                                     <option value="muddatli" {{ old('contract_type', $employee->employmentDetail?->contract_type) == 'muddatli' ? 'selected' : '' }}>Muddatli</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="form-label">Ishga qabul <span class="required">*</span></label>
+                                <label class="form-label">Ishga qabul</label>
                                 <input type="date" name="hire_date"
                                        value="{{ old('hire_date', $employee->employmentDetail?->hire_date?->format('Y-m-d') ?? $employee->hire_date?->format('Y-m-d')) }}"
-                                       class="form-input" required>
+                                       class="form-input">
                             </div>
                         </div>
                     </div>
@@ -616,8 +616,8 @@
                     <div class="section-body space-y-3">
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="form-label">Ta'lim darajasi <span class="required">*</span></label>
-                                <select name="education_level" class="form-input" required>
+                                <label class="form-label">Ta'lim darajasi</label>
+                                <select name="education_level" class="form-input">
                                     <option value="">Tanlang</option>
                                     <option value="secondary" {{ old('education_level', $employee->education_level) == 'secondary' ? 'selected' : '' }}>O'rta</option>
                                     <option value="vocational" {{ old('education_level', $employee->education_level) == 'vocational' ? 'selected' : '' }}>O'rta-maxsus</option>

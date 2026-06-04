@@ -64,17 +64,17 @@
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Talaba ID <span class="text-red-500">*</span></label>
-                                        <input type="text" name="student_id" value="{{ old('student_id', $student->student_id) }}" required
+                                        <input type="text" name="student_id" value="{{ old('student_id', $student->student_id) }}"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Ism <span class="text-red-500">*</span></label>
-                                        <input type="text" name="first_name" value="{{ old('first_name', $student->first_name) }}" required
+                                        <input type="text" name="first_name" value="{{ old('first_name', $student->first_name) }}"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Familiya <span class="text-red-500">*</span></label>
-                                        <input type="text" name="last_name" value="{{ old('last_name', $student->last_name) }}" required
+                                        <input type="text" name="last_name" value="{{ old('last_name', $student->last_name) }}"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div>
@@ -84,12 +84,12 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Tug'ilgan sana <span class="text-red-500">*</span></label>
-                                        <input type="date" name="birth_date" value="{{ old('birth_date', date('Y-m-d', strtotime($student->birth_date))) }}" required
+                                        <input type="date" name="birth_date" value="{{ old('birth_date', date('Y-m-d', strtotime($student->birth_date))) }}"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Jinsi <span class="text-red-500">*</span></label>
-                                        <select name="gender" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <select name="gender" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                             <option value="erkak" {{ old('gender', $student->gender) == 'erkak' ? 'selected' : '' }}>Erkak</option>
                                             <option value="ayol" {{ old('gender', $student->gender) == 'ayol' ? 'selected' : '' }}>Ayol</option>
                                         </select>
@@ -118,7 +118,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Telefon <span class="text-red-500">*</span></label>
-                                        <input type="text" name="phone" value="{{ old('phone', $student->phone) }}" required
+                                        <input type="text" name="phone" value="{{ old('phone', $student->phone) }}"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div>
@@ -225,7 +225,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Fakultet <span class="text-red-500">*</span></label>
-                                        <select name="faculty_id" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <select name="faculty_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                             @foreach($faculties as $faculty)
                                                 <option value="{{ $faculty->id }}" {{ old('faculty_id', $student->faculty_id) == $faculty->id ? 'selected' : '' }}>
                                                     {{ $faculty->name }}
@@ -235,7 +235,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Yo'nalish <span class="text-red-500">*</span></label>
-                                        <select name="specialty_id" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <select name="specialty_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                             @foreach($specialties as $specialty)
                                                 <option value="{{ $specialty->id }}" {{ old('specialty_id', $student->specialty_id) == $specialty->id ? 'selected' : '' }}>
                                                     {{ $specialty->name }}
@@ -256,7 +256,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Kurs <span class="text-red-500">*</span></label>
-                                        <select name="course" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <select name="course" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                             @for($i = 1; $i <= 6; $i++)
                                                 <option value="{{ $i }}" {{ old('course', $student->course) == $i ? 'selected' : '' }}>{{ $i }}-kurs</option>
                                             @endfor
@@ -264,7 +264,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Ta'lim shakli <span class="text-red-500">*</span></label>
-                                        <select name="education_form" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <select name="education_form" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                             <option value="kunduzgi" {{ old('education_form', $student->education_form) == 'kunduzgi' ? 'selected' : '' }}>Kunduzgi</option>
                                             <option value="sirtqi" {{ old('education_form', $student->education_form) == 'sirtqi' ? 'selected' : '' }}>Sirtqi</option>
                                             <option value="kechki" {{ old('education_form', $student->education_form) == 'kechki' ? 'selected' : '' }}>Kechki</option>
@@ -273,7 +273,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Ta'lim turi <span class="text-red-500">*</span></label>
-                                        <select name="education_type" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <select name="education_type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                             <option value="byudjet" {{ old('education_type', $student->education_type) == 'byudjet' ? 'selected' : '' }}>Byudjet</option>
                                             <option value="shartnoma" {{ old('education_type', $student->education_type) == 'shartnoma' ? 'selected' : '' }}>Shartnoma</option>
                                         </select>
