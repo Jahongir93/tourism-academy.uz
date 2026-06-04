@@ -55,13 +55,19 @@ class TeachersPageController extends Controller
             ->map(function ($emp) {
                 $empDetail = $emp->employmentDetail;
                 $positionName = $empDetail && $empDetail->position ? $empDetail->position->name : ($emp->position ?? '');
+                $photo = $emp->photo_url;
+                if ($photo && !str_starts_with($photo, 'http')
+                    && !str_starts_with($photo, 'assets/') && !str_starts_with($photo, 'images/')
+                    && !str_starts_with($photo, 'storage/')) {
+                    $photo = 'storage/' . ltrim($photo, '/');
+                }
                 return (object)[
                     'id' => $emp->id,
                     'source' => 'employee',
                     'name' => $emp->full_name,
                     'position' => $positionName,
-                    'image' => $emp->photo_url,
-                    'bio' => '',
+                    'image' => $photo,
+                    'bio' => $emp->bio_uz ?? '',
                     'email' => $emp->email,
                     'edit_url' => route('employees.edit', $emp->id),
                     'view_url' => route('employees.show', $emp->id),

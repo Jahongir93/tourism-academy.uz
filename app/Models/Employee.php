@@ -41,6 +41,11 @@ class Employee extends Model
         'employee_type',
         'department_id',
         'position',
+        'bio_uz',
+        'bio_ru',
+        'bio_en',
+        'show_on_site',
+        'public_order',
         'hire_date',
         'status',
         'user_id'

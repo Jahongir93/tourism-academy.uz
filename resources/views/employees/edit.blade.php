@@ -756,6 +756,42 @@
             </div>
         </div>
 
+        <!-- Public site profile (teachers shown on /teachers) -->
+        <div class="form-section mt-4">
+            <div class="section-header">
+                <i class="fas fa-globe bg-teal-100 text-teal-600"></i>
+                <h3 class="font-semibold text-gray-800 text-sm">Saytdagi profil (o'qituvchilar uchun)</h3>
+            </div>
+            <div class="section-body">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" name="show_on_site" value="1"
+                               {{ old('show_on_site', $employee->show_on_site) ? 'checked' : '' }}>
+                        Saytning "O'qituvchilar" sahifasida ko'rsatilsin
+                    </label>
+                    <div>
+                        <label class="form-label">Tartib raqami</label>
+                        <input type="number" name="public_order" min="0" class="form-input"
+                               value="{{ old('public_order', $employee->public_order ?? 0) }}">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Bio (O'zbek)</label>
+                    <textarea name="bio_uz" rows="2" class="form-input">{{ old('bio_uz', $employee->bio_uz) }}</textarea>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="form-label">Bio (Rus)</label>
+                        <textarea name="bio_ru" rows="2" class="form-input">{{ old('bio_ru', $employee->bio_ru) }}</textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Bio (Ingliz)</label>
+                        <textarea name="bio_en" rows="2" class="form-input">{{ old('bio_en', $employee->bio_en) }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Submit Buttons -->
         <div class="flex flex-wrap justify-between items-center gap-3 mt-6 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
             <div class="text-sm text-gray-500">

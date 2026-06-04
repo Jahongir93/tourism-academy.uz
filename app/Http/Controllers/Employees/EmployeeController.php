@@ -406,8 +406,18 @@ class EmployeeController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
 
             // Photo
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+
+            // Public teacher profile (shown on /teachers, /cms/teachers)
+            'bio_uz' => 'nullable|string',
+            'bio_ru' => 'nullable|string',
+            'bio_en' => 'nullable|string',
+            'show_on_site' => 'nullable|boolean',
+            'public_order' => 'nullable|integer|min:0',
         ]);
+
+        // Checkbox: explicit boolean so unchecking persists
+        $validated['show_on_site'] = $request->boolean('show_on_site');
 
         DB::beginTransaction();
         try {

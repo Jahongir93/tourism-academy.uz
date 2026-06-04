@@ -17,21 +17,34 @@
         return $content ? ($content->$langField ?? $content->value_uz ?? $default) : $default;
     };
 
-    // Merge Employee + legacy CmsContent teachers (same logic as /cms/teachers)
+    // Helper: normalize a stored photo path to a public URL (firewall-safe)
+    $resolvePhoto = function($path) {
+        if (!$path) return null;
+        if (str_starts_with($path, 'http')) return $path;          // external
+        if (str_starts_with($path, 'assets/') || str_starts_with($path, 'images/') || str_starts_with($path, 'storage/')) {
+            return asset($path);                                    // already a public path
+        }
+        return asset('storage/' . ltrim($path, '/'));               // public-disk upload
+    };
+
+    // Bio in current language with uz fallback
+    $bioField = 'bio_' . $lang;
+
+    // Merge Employee + legacy CmsContent teachers (same source as /cms/teachers, /employees/teachers)
     $employeeTeachers = Employee::where('employee_type', 'teacher')
+        ->where(function($q){ $q->where('show_on_site', true)->orWhereNull('show_on_site'); })
         ->with(['employmentDetail.position'])
-        ->orderBy('last_name')->orderBy('first_name')
+        ->orderBy('public_order')->orderBy('last_name')->orderBy('first_name')
         ->get()
-        ->map(function($emp) {
+        ->map(function($emp) use ($resolvePhoto, $bioField) {
             $empDetail = $emp->employmentDetail;
             $positionName = $empDetail && $empDetail->position ? $empDetail->position->name : ($emp->position ?? '');
-            $photo = $emp->photo_url ? (str_starts_with($emp->photo_url, 'http') ? $emp->photo_url : 'storage/' . ltrim($emp->photo_url, '/')) : null;
             return (object)[
                 'id' => 'emp_' . $emp->id,
                 'name' => $emp->full_name,
                 'position' => $positionName,
-                'bio' => '',
-                'image' => $photo,
+                'bio' => $emp->{$bioField} ?: ($emp->bio_uz ?? ''),
+                'image' => $resolvePhoto($emp->photo_url),
             ];
         });
 
