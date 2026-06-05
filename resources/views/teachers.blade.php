@@ -31,22 +31,29 @@
     $bioField = 'bio_' . $lang;
 
     // Merge Employee + legacy CmsContent teachers (same source as /cms/teachers, /employees/teachers)
-    $employeeTeachers = Employee::where('employee_type', 'teacher')
-        ->where(function($q){ $q->where('show_on_site', true)->orWhereNull('show_on_site'); })
-        ->with(['employmentDetail.position'])
-        ->orderBy('public_order')->orderBy('last_name')->orderBy('first_name')
-        ->get()
-        ->map(function($emp) use ($resolvePhoto, $bioField) {
-            $empDetail = $emp->employmentDetail;
-            $positionName = $empDetail && $empDetail->position ? $empDetail->position->name : ($emp->position ?? '');
-            return (object)[
-                'id' => 'emp_' . $emp->id,
-                'name' => $emp->full_name,
-                'position' => $positionName,
-                'bio' => $emp->{$bioField} ?: ($emp->bio_uz ?? ''),
-                'image' => $resolvePhoto($emp->photo_url),
-            ];
-        });
+    // Defensive: if the bio/show_on_site migration hasn't run yet, degrade gracefully.
+    $hasPublicCols = \Illuminate\Support\Facades\Schema::hasColumn('employees', 'show_on_site');
+    try {
+        $employeeTeachers = Employee::where('employee_type', 'teacher')
+            ->when($hasPublicCols, fn($q) => $q->where(function($w){ $w->where('show_on_site', true)->orWhereNull('show_on_site'); }))
+            ->with(['employmentDetail.position'])
+            ->when($hasPublicCols, fn($q) => $q->orderBy('public_order'))
+            ->orderBy('last_name')->orderBy('first_name')
+            ->get()
+            ->map(function($emp) use ($resolvePhoto, $bioField) {
+                $empDetail = $emp->employmentDetail;
+                $positionName = $empDetail && $empDetail->position ? $empDetail->position->name : ($emp->position ?? '');
+                return (object)[
+                    'id' => 'emp_' . $emp->id,
+                    'name' => $emp->full_name,
+                    'position' => $positionName,
+                    'bio' => ($emp->{$bioField} ?? null) ?: ($emp->bio_uz ?? ''),
+                    'image' => $resolvePhoto($emp->photo_url),
+                ];
+            });
+    } catch (\Throwable $e) {
+        $employeeTeachers = collect();
+    }
 
     $legacyCmsTeachers = CmsContent::where('section', 'teachers_list')->orderBy('order')->get()
         ->map(function($c) use ($langField) {
