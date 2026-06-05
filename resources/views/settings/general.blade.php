@@ -165,6 +165,7 @@
                             };
                             $currentLogo = $settings->where('key', 'site_logo')->first()?->value;
                             $currentFavicon = $settings->where('key', 'site_favicon')->first()?->value;
+                            $currentLogo2 = $settings->where('key', 'site_logo_secondary')->first()?->value;
                         @endphp
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Sayt logosi</label>
@@ -189,6 +190,23 @@
                             <input type="hidden" name="site_favicon_path" id="site_favicon_path">
                             <div id="favicon_status" style="font-size:12px;margin-top:4px"></div>
                             <small class="text-muted">Tavsiya: ICO yoki PNG 32x32, max 1MB</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Ikkilamchi (hamkor) logo</label>
+                            <div class="mb-2">
+                                <img id="logo2_preview" src="{{ $currentLogo2 ? $resolveImg($currentLogo2) : '' }}" alt="Hamkor logo"
+                                     class="img-thumbnail" style="max-height:60px;{{ $currentLogo2 ? '' : 'display:none' }}">
+                            </div>
+                            <input type="file" id="site_logo2_input" class="form-control" accept="image/*" data-no-waf>
+                            <input type="hidden" name="site_logo_secondary_path" id="site_logo_secondary_path">
+                            <div id="logo2_status" style="font-size:12px;margin-top:4px"></div>
+                            @if($currentLogo2)
+                            <label class="d-flex align-items-center gap-2 mt-2" style="font-size:13px">
+                                <input type="checkbox" name="site_logo_secondary_clear" value="1"> Hamkor logoni o'chirish
+                            </label>
+                            @endif
+                            <small class="text-muted">Bo'sh qoldirilsa, sayt sarlavhasida faqat asosiy logo ko'rinadi</small>
                         </div>
                     </div>
                 </div>
@@ -293,5 +311,6 @@ function wafUpload(inputId, pathId, previewId, statusId) {
 }
 wafUpload('site_logo_input', 'site_logo_path', 'logo_preview', 'logo_status');
 wafUpload('site_favicon_input', 'site_favicon_path', 'favicon_preview', 'favicon_status');
+wafUpload('site_logo2_input', 'site_logo_secondary_path', 'logo2_preview', 'logo2_status');
 </script>
 @endsection

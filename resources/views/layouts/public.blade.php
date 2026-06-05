@@ -2024,10 +2024,12 @@
                         </a>
                     @endauth
 
-                    <!-- UN Tourism Logo -->
-                    <a href="https://www.unwto.org" target="_blank" class="un-tourism-logo" title="UN Tourism">
-                        <img src="{{ asset('images/un-tourism-logo.png') }}" alt="UN Tourism" onerror="this.style.display='none'">
+                    <!-- Hamkor logosi (Settings'dan boshqariladi) -->
+                    @if(!empty($siteLogoSecondary))
+                    <a href="#" class="un-tourism-logo" title="Hamkor">
+                        <img src="{{ $siteLogoSecondary }}" alt="Hamkor logo" onerror="this.style.display='none'">
                     </a>
+                    @endif
                 </div>
 
                 <!-- Mobile Menu Toggle -->

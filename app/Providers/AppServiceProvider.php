@@ -78,9 +78,11 @@ class AppServiceProvider extends ServiceProvider
                     return asset('storage/' . ltrim($path, '/'));
                 };
                 View::share('siteLogo', $resolve(\App\Models\SystemSetting::get('site_logo')));
+                View::share('siteLogoSecondary', $resolve(\App\Models\SystemSetting::get('site_logo_secondary')));
                 View::share('siteFavicon', $resolve(\App\Models\SystemSetting::get('site_favicon')));
             } catch (\Throwable $e) {
                 View::share('siteLogo', null);
+                View::share('siteLogoSecondary', null);
                 View::share('siteFavicon', null);
             }
         }

@@ -88,6 +88,15 @@ class SettingsController extends Controller
                 SystemSetting::set('site_favicon', $path);
             }
 
+            // Ikkilamchi (hamkor) logo
+            if ($request->filled('site_logo_secondary_path')) {
+                SystemSetting::set('site_logo_secondary', ltrim($request->input('site_logo_secondary_path'), '/'));
+            }
+            // Bo'sh yuborilsa — o'chirish (hamkor logoni olib tashlash)
+            if ($request->input('site_logo_secondary_clear') == '1') {
+                SystemSetting::set('site_logo_secondary', '');
+            }
+
             SystemSetting::clearCache();
 
             ActivityLog::log('update', 'Updated general settings');

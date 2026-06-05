@@ -3069,10 +3069,12 @@
                                 <img src="{{ asset('images/logo.png') }}" alt="Academy Logo" onerror="this.style.display='none'">
                             @endif
                         </a>
+                        @if(!empty($siteLogoSecondary))
                         <div class="logo-separator"></div>
-                        <a href="#" title="UN Tourism">
-                            <img src="{{ asset('images/un-tourism-logo.png') }}" alt="UN Tourism Logo" onerror="this.style.display='none'">
+                        <a href="#" title="Hamkor logosi">
+                            <img src="{{ $siteLogoSecondary }}" alt="Hamkor logo" onerror="this.style.display='none'">
                         </a>
+                        @endif
                     </div>
 
                     <!-- Right: Actions -->
