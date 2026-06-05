@@ -88,6 +88,25 @@
         padding-top: 20px;
         margin-top: 30px;
     }
+    .cms-config-modal {
+        z-index: 20050;
+    }
+    body > .modal-backdrop {
+        z-index: 20040;
+    }
+    .cms-config-modal .modal-dialog {
+        max-width: min(640px, calc(100vw - 24px));
+    }
+    .cms-config-modal .modal-content {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
+        overflow: hidden;
+    }
+    .cms-config-modal .modal-body {
+        max-height: calc(100vh - 190px);
+        overflow-y: auto;
+    }
 </style>
 @endsection
 
@@ -163,17 +182,16 @@
                             <label class="form-label fw-semibold">Footer logosi</label>
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    @if($footerLogo && $footerLogo->value_uz)
-                                        <img src="{{ asset('storage/' . $footerLogo->value_uz) }}" alt="Footer Logo"
-                                             style="height: 50px; background: #1a1a2e; padding: 10px; border-radius: 6px;">
-                                    @else
-                                        <div class="bg-dark text-white p-3 rounded">
-                                            <i class="fas fa-image fa-2x"></i>
-                                        </div>
-                                    @endif
+                                    <img id="footer_logo_preview"
+                                         src="{{ $footerLogo && $footerLogo->value_uz ? \App\Support\CmsHeaderFooter::assetUrl($footerLogo->value_uz) : '' }}"
+                                         alt="Footer Logo"
+                                         style="height: 50px; background: #1a1a2e; padding: 10px; border-radius: 6px;{{ ($footerLogo && $footerLogo->value_uz) ? '' : 'display:none' }}">
                                 </div>
                                 <div class="col">
-                                    <input type="file" name="footer_logo" class="form-control" accept="image/*">
+                                    {{-- name yo'q + data-no-waf: WAF-safe, AJAX orqali yuklanadi --}}
+                                    <input type="file" id="footer_logo_input" class="form-control" accept="image/*" data-no-waf>
+                                    <input type="hidden" name="footer_logo_path" id="footer_logo_path">
+                                    <div id="footer_logo_status" style="font-size:12px;margin-top:4px"></div>
                                 </div>
                             </div>
                         </div>
@@ -406,7 +424,7 @@
             <div class="col-lg-6">
                 <div class="content-card">
                     <div class="section-header warning">
-                        <h5 class="mb-0"><i class="fas fa-concierge-bell me-2"></i>3-ustun: Xizmatlar</h5>
+                        <h5 class="mb-0"><i class="fas fa-concierge-bell me-2"></i>3-ustun: Resurslar</h5>
                     </div>
                     <div class="p-4">
                         @php
@@ -580,7 +598,7 @@
     </form>
 
 {{-- Add Link Modal --}}
-<div class="modal fade" id="addLinkModal" tabindex="-1">
+<div class="modal fade cms-config-modal" id="addLinkModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ route('cms.header-footer.footer.add-link') }}" method="POST">
@@ -625,43 +643,46 @@
 </form>
 
 {{-- Edit Link Modal --}}
-<div class="modal fade" id="editLinkModal" tabindex="-1">
+<div class="modal fade cms-config-modal" id="editLinkModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
+            <form action="{{ route('cms.header-footer.footer.update-link') }}" method="POST">
+                @csrf
             <div class="modal-header">
                 <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Havolani tahrirlash</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="editLinkKey">
+                <input type="hidden" name="link_key" id="editLinkKey">
                 <input type="hidden" id="editUrlKey">
                 <div class="mb-3">
                     <label class="form-label">Havola matni (O'zbekcha) <span class="text-danger">*</span></label>
-                    <input type="text" id="editLinkTextUz" class="form-control" required>
+                    <input type="text" name="link_text_uz" id="editLinkTextUz" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Havola matni (English)</label>
-                    <input type="text" id="editLinkTextEn" class="form-control">
+                    <input type="text" name="link_text_en" id="editLinkTextEn" class="form-control">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Havola matni (Русский)</label>
-                    <input type="text" id="editLinkTextRu" class="form-control">
+                    <input type="text" name="link_text_ru" id="editLinkTextRu" class="form-control">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">URL <span class="text-danger">*</span></label>
-                    <input type="text" id="editLinkUrl" class="form-control" placeholder="/page-url yoki https://..." required>
+                    <input type="text" name="link_url" id="editLinkUrl" class="form-control" placeholder="/page-url yoki https://..." required>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
-                <button type="button" class="btn btn-primary" id="saveEditLink">Saqlash</button>
+                <button type="submit" class="btn btn-primary" id="saveEditLink">Saqlash</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
 
 {{-- Preview Modal --}}
-<div class="modal fade" id="previewModal" tabindex="-1">
+<div class="modal fade cms-config-modal" id="previewModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -713,9 +734,20 @@
 <script>
     let currentEditLinkItem = null;
 
+    function prepareCmsConfigModals() {
+        document.querySelectorAll('.cms-config-modal').forEach(function(modal) {
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+        });
+    }
+
+    prepareCmsConfigModals();
+
     // Set column when opening add link modal
     document.querySelectorAll('[data-bs-target="#addLinkModal"]').forEach(btn => {
         btn.addEventListener('click', function() {
+            prepareCmsConfigModals();
             document.getElementById('addLinkColumn').value = this.dataset.column;
         });
     });
@@ -732,69 +764,25 @@
             document.getElementById('editLinkTextRu').value = this.dataset.textRu || '';
             document.getElementById('editLinkUrl').value = this.dataset.url || '#';
 
-            const editModal = new bootstrap.Modal(document.getElementById('editLinkModal'));
-            editModal.show();
+            prepareCmsConfigModals();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('editLinkModal')).show();
         });
     });
 
-    // Save edit link
-    document.getElementById('saveEditLink').addEventListener('click', function() {
-        if (!currentEditLinkItem) return;
+    const editLinkForm = document.querySelector('#editLinkModal form');
+    if (editLinkForm) {
+        editLinkForm.addEventListener('submit', function(e) {
+            const textUz = document.getElementById('editLinkTextUz').value.trim();
+            const url = document.getElementById('editLinkUrl').value.trim();
 
-        const linkKey = document.getElementById('editLinkKey').value;
-        const urlKey = document.getElementById('editUrlKey').value;
-        const textUz = document.getElementById('editLinkTextUz').value;
-        const textEn = document.getElementById('editLinkTextEn').value;
-        const textRu = document.getElementById('editLinkTextRu').value;
-        const url = document.getElementById('editLinkUrl').value;
+            if (textUz && url) {
+                return;
+            }
 
-        if (!textUz || !url) {
+            e.preventDefault();
             alert('Matn va URL kiritilishi shart!');
-            return;
-        }
-
-        // Update display
-        currentEditLinkItem.querySelector('.link-info strong').textContent = textUz;
-        currentEditLinkItem.querySelector('.link-info small').textContent = url;
-
-        // Update hidden fields
-        const hiddenFields = currentEditLinkItem.querySelectorAll('input[type="hidden"]');
-        hiddenFields.forEach(field => {
-            if (field.name.includes('[value_uz]') && field.classList.contains('link-text-uz')) {
-                field.value = textUz;
-            }
-            if (field.name.includes('[value_en]') && field.classList.contains('link-text-en')) {
-                field.value = textEn;
-            }
-            if (field.name.includes('[value_ru]') && field.classList.contains('link-text-ru')) {
-                field.value = textRu;
-            }
-            if (field.classList.contains('link-url')) {
-                field.value = url;
-            }
-            // Also update EN/RU URL hidden fields
-            if (field.name.includes(urlKey) && field.name.includes('value_en')) {
-                field.value = url;
-            }
-            if (field.name.includes(urlKey) && field.name.includes('value_ru')) {
-                field.value = url;
-            }
         });
-
-        // Update the edit button data attributes
-        const editBtn = currentEditLinkItem.querySelector('.edit-link-btn');
-        editBtn.dataset.textUz = textUz;
-        editBtn.dataset.textEn = textEn;
-        editBtn.dataset.textRu = textRu;
-        editBtn.dataset.url = url;
-
-        // Close modal
-        bootstrap.Modal.getInstance(document.getElementById('editLinkModal')).hide();
-        currentEditLinkItem = null;
-
-        // Show save reminder
-        showSaveReminder();
-    });
+    }
 
     // Show save reminder toast
     function showSaveReminder() {
@@ -830,6 +818,30 @@
                 document.getElementById('deleteLinkForm').submit();
             }
         });
+    });
+
+    // Footer logo: WAF-safe AJAX base64 upload
+    document.getElementById('footer_logo_input')?.addEventListener('change', function(e) {
+        const file = e.target.files[0]; if (!file) return;
+        const status = document.getElementById('footer_logo_status');
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const prev = document.getElementById('footer_logo_preview');
+            if (prev) { prev.src = ev.target.result; prev.style.display = 'inline-block'; }
+            status.textContent = 'Yuklanmoqda...'; status.style.color = '#f59e0b';
+            fetch('{{ route("cms.upload.image.b64") }}', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'},
+                body: JSON.stringify({ name: file.name, type: file.type, data: ev.target.result.split(',')[1] })
+            })
+            .then(r => r.ok ? r.json() : Promise.reject('HTTP ' + r.status))
+            .then(res => {
+                if (res.path) { document.getElementById('footer_logo_path').value = res.path; status.textContent = '✓ Logo yuklandi — saqlashni bosing'; status.style.color = '#10b981'; }
+                else { throw new Error(res.error || 'xato'); }
+            })
+            .catch(err => { status.textContent = '✗ Xato: ' + err; status.style.color = '#ef4444'; });
+        };
+        reader.readAsDataURL(file);
     });
 </script>
 @endsection

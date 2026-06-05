@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CmsContent;
 use App\Models\CmsMenu;
 use App\Models\CmsMenuItem;
+use App\Support\CmsHeaderFooter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,6 +17,11 @@ class HeaderFooterController extends Controller
      */
     public function header()
     {
+        CmsHeaderFooter::syncDefaults('header');
+        $contents = CmsHeaderFooter::contents('header');
+
+        return view('cms.header-footer.header', compact('contents'));
+
         // Default header structure
         $defaultHeader = [
             ['key' => 'logo_url', 'type' => 'image', 'value_uz' => '', 'value_en' => '', 'value_ru' => '', 'order' => 1],
@@ -84,13 +90,22 @@ class HeaderFooterController extends Controller
             // Update other content
             foreach ($request->contents as $contentData) {
                 if (!isset($contentData['key']) || $contentData['key'] === 'logo_url') continue;
+                $valueUz = $contentData['value_uz'] ?? null;
+                $valueEn = $contentData['value_en'] ?? null;
+                $valueRu = $contentData['value_ru'] ?? null;
+
+                if (($contentData['type'] ?? null) === 'url') {
+                    $valueUz = CmsHeaderFooter::normalizeInputUrl($valueUz);
+                    $valueEn = CmsHeaderFooter::normalizeInputUrl($valueEn ?: $valueUz);
+                    $valueRu = CmsHeaderFooter::normalizeInputUrl($valueRu ?: $valueUz);
+                }
 
                 CmsContent::updateOrCreate(
                     ['section' => 'header', 'key' => $contentData['key']],
                     [
-                        'value_uz' => $contentData['value_uz'] ?? null,
-                        'value_en' => $contentData['value_en'] ?? null,
-                        'value_ru' => $contentData['value_ru'] ?? null,
+                        'value_uz' => $valueUz,
+                        'value_en' => $valueEn,
+                        'value_ru' => $valueRu,
                         'type' => $contentData['type'] ?? 'text',
                         'order' => $contentData['order'] ?? 0
                     ]
@@ -112,6 +127,11 @@ class HeaderFooterController extends Controller
      */
     public function footer()
     {
+        CmsHeaderFooter::syncDefaults('footer');
+        $contents = CmsHeaderFooter::contents('footer');
+
+        return view('cms.header-footer.footer', compact('contents'));
+
         // Default footer structure
         $defaultFooter = [
             // Logo & Description
@@ -196,10 +216,14 @@ class HeaderFooterController extends Controller
                 'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             ]);
 
-            // Handle logo upload
-            if ($request->hasFile('footer_logo')) {
+            // Handle logo upload — WAF-safe AJAX path first, then multipart
+            $logoPath = null;
+            if ($request->filled('footer_logo_path')) {
+                $logoPath = ltrim($request->input('footer_logo_path'), '/');
+            } elseif ($request->hasFile('footer_logo')) {
                 $logoPath = $request->file('footer_logo')->store('cms/logos', 'public');
-
+            }
+            if ($logoPath) {
                 CmsContent::updateOrCreate(
                     ['section' => 'footer', 'key' => 'footer_logo'],
                     [
@@ -215,13 +239,22 @@ class HeaderFooterController extends Controller
             // Update other content
             foreach ($request->contents as $contentData) {
                 if (!isset($contentData['key']) || $contentData['key'] === 'footer_logo') continue;
+                $valueUz = $contentData['value_uz'] ?? null;
+                $valueEn = $contentData['value_en'] ?? null;
+                $valueRu = $contentData['value_ru'] ?? null;
+
+                if (($contentData['type'] ?? null) === 'url' || str_ends_with($contentData['key'], '_url')) {
+                    $valueUz = CmsHeaderFooter::normalizeInputUrl($valueUz);
+                    $valueEn = CmsHeaderFooter::normalizeInputUrl($valueEn ?: $valueUz);
+                    $valueRu = CmsHeaderFooter::normalizeInputUrl($valueRu ?: $valueUz);
+                }
 
                 CmsContent::updateOrCreate(
                     ['section' => 'footer', 'key' => $contentData['key']],
                     [
-                        'value_uz' => $contentData['value_uz'] ?? null,
-                        'value_en' => $contentData['value_en'] ?? null,
-                        'value_ru' => $contentData['value_ru'] ?? null,
+                        'value_uz' => $valueUz,
+                        'value_en' => $valueEn,
+                        'value_ru' => $valueRu,
                         'type' => $contentData['type'] ?? 'text',
                         'order' => $contentData['order'] ?? 0
                     ]
@@ -252,6 +285,7 @@ class HeaderFooterController extends Controller
         ]);
 
         $column = $request->column;
+        $linkUrl = CmsHeaderFooter::normalizeInputUrl($request->link_url);
         $lastLink = CmsContent::where('section', 'footer')
             ->where('key', 'like', "{$column}_link%_text")
             ->orderBy('key', 'desc')
@@ -281,10 +315,10 @@ class HeaderFooterController extends Controller
         CmsContent::create([
             'section' => 'footer',
             'key' => "{$column}_link{$nextNumber}_url",
-            'value_uz' => $request->link_url,
-            'value_en' => $request->link_url,
-            'value_ru' => $request->link_url,
-            'type' => 'text',
+            'value_uz' => $linkUrl,
+            'value_en' => $linkUrl,
+            'value_ru' => $linkUrl,
+            'type' => 'url',
             'order' => $order + 1
         ]);
 
@@ -313,6 +347,52 @@ class HeaderFooterController extends Controller
     }
 
     /**
+     * Update a footer link from the edit modal.
+     */
+    public function updateFooterLink(Request $request)
+    {
+        $validated = $request->validate([
+            'link_key' => 'required|string',
+            'link_text_uz' => 'required|string|max:255',
+            'link_text_en' => 'nullable|string|max:255',
+            'link_text_ru' => 'nullable|string|max:255',
+            'link_url' => 'required|string|max:255',
+        ]);
+
+        $linkKey = $validated['link_key'];
+        $urlKey = str_replace('_text', '_url', $linkKey);
+        $link = CmsContent::where('section', 'footer')->where('key', $linkKey)->first();
+        $url = CmsHeaderFooter::normalizeInputUrl($validated['link_url']);
+
+        CmsContent::updateOrCreate(
+            ['section' => 'footer', 'key' => $linkKey],
+            [
+                'value_uz' => $validated['link_text_uz'],
+                'value_en' => $validated['link_text_en'] ?? $validated['link_text_uz'],
+                'value_ru' => $validated['link_text_ru'] ?? $validated['link_text_uz'],
+                'type' => 'text',
+                'order' => $link?->order ?? 0,
+                'is_active' => true,
+            ]
+        );
+
+        CmsContent::updateOrCreate(
+            ['section' => 'footer', 'key' => $urlKey],
+            [
+                'value_uz' => $url,
+                'value_en' => $url,
+                'value_ru' => $url,
+                'type' => 'url',
+                'order' => ($link?->order ?? 0) + 1,
+                'is_active' => true,
+            ]
+        );
+
+        return redirect()->route('cms.header-footer.footer')
+            ->with('success', 'Havola muvaffaqiyatli yangilandi!');
+    }
+
+    /**
      * Add a new menu item to header
      */
     public function addHeaderMenu(Request $request)
@@ -323,6 +403,8 @@ class HeaderFooterController extends Controller
             'menu_label_ru' => 'nullable|string|max:255',
             'menu_url' => 'required|string|max:255',
         ]);
+
+        $menuUrl = CmsHeaderFooter::normalizeInputUrl($request->menu_url);
 
         // Find the next menu number
         $lastMenu = CmsContent::where('section', 'header')
@@ -353,15 +435,61 @@ class HeaderFooterController extends Controller
         CmsContent::create([
             'section' => 'header',
             'key' => "menu_custom_{$nextNumber}_url",
-            'value_uz' => $request->menu_url,
-            'value_en' => $request->menu_url,
-            'value_ru' => $request->menu_url,
+            'value_uz' => $menuUrl,
+            'value_en' => $menuUrl,
+            'value_ru' => $menuUrl,
             'type' => 'url',
             'order' => $order
         ]);
 
         return redirect()->route('cms.header-footer.header')
             ->with('success', "Yangi menyu qo'shildi!");
+    }
+
+    /**
+     * Update a custom header menu item.
+     */
+    public function updateHeaderMenu(Request $request)
+    {
+        $validated = $request->validate([
+            'menu_key' => 'required|string',
+            'menu_label_uz' => 'required|string|max:255',
+            'menu_label_en' => 'nullable|string|max:255',
+            'menu_label_ru' => 'nullable|string|max:255',
+            'menu_url' => 'required|string|max:255',
+        ]);
+
+        $menuKey = $validated['menu_key'];
+        $urlKey = $menuKey . '_url';
+        $menu = CmsContent::where('section', 'header')->where('key', $menuKey)->first();
+        $url = CmsHeaderFooter::normalizeInputUrl($validated['menu_url']);
+
+        CmsContent::updateOrCreate(
+            ['section' => 'header', 'key' => $menuKey],
+            [
+                'value_uz' => $validated['menu_label_uz'],
+                'value_en' => $validated['menu_label_en'] ?? $validated['menu_label_uz'],
+                'value_ru' => $validated['menu_label_ru'] ?? $validated['menu_label_uz'],
+                'type' => 'text',
+                'order' => $menu?->order ?? 20,
+                'is_active' => $menu?->is_active ?? true,
+            ]
+        );
+
+        CmsContent::updateOrCreate(
+            ['section' => 'header', 'key' => $urlKey],
+            [
+                'value_uz' => $url,
+                'value_en' => $url,
+                'value_ru' => $url,
+                'type' => 'url',
+                'order' => $menu?->order ?? 20,
+                'is_active' => $menu?->is_active ?? true,
+            ]
+        );
+
+        return redirect()->route('cms.header-footer.header')
+            ->with('success', 'Menyu muvaffaqiyatli yangilandi!');
     }
 
     /**
@@ -426,10 +554,7 @@ class HeaderFooterController extends Controller
         ]);
 
         $parentKey = $request->parent_menu_key;
-        $url = $request->submenu_url;
-        if (!str_starts_with($url, '/') && !str_starts_with($url, 'http') && $url !== '#') {
-            $url = '/' . $url;
-        }
+        $url = CmsHeaderFooter::normalizeInputUrl($request->submenu_url);
 
         // Find the next submenu number for this parent
         $lastSubmenu = CmsContent::where('section', 'header')
@@ -528,11 +653,19 @@ class HeaderFooterController extends Controller
             'menu_statistics' => ['uz' => 'Statistika', 'en' => 'Statistics', 'ru' => 'Статистика'],
         ];
 
-        // Parent elementni topish (birinchi root element)
-        $parentItem = CmsMenuItem::where('menu_id', $headerMenu->id)
-            ->whereNull('parent_id')
-            ->where('is_active', true)
-            ->first();
+        $parentItem = null;
+        if (isset($parentTitleMap[$parentKey])) {
+            $titles = array_values($parentTitleMap[$parentKey]);
+            $parentItem = CmsMenuItem::where('menu_id', $headerMenu->id)
+                ->whereNull('parent_id')
+                ->where('is_active', true)
+                ->where(function ($query) use ($titles) {
+                    $query->whereIn('title_uz', $titles)
+                        ->orWhereIn('title_en', $titles)
+                        ->orWhereIn('title_ru', $titles);
+                })
+                ->first();
+        }
 
         if (!$parentItem && isset($parentTitleMap[$parentKey])) {
             $titles = $parentTitleMap[$parentKey];
@@ -622,10 +755,7 @@ class HeaderFooterController extends Controller
 
         $submenuKey = $request->submenu_key;
         $urlKey = $submenuKey . '_url';
-        $newUrl = $request->submenu_url;
-        if (!str_starts_with($newUrl, '/') && !str_starts_with($newUrl, 'http') && $newUrl !== '#') {
-            $newUrl = '/' . $newUrl;
-        }
+        $newUrl = CmsHeaderFooter::normalizeInputUrl($request->submenu_url);
 
         // Eski URL ni olish (CmsMenuItem ni topish uchun)
         $oldUrlContent = CmsContent::where('section', 'header')->where('key', $urlKey)->first();
