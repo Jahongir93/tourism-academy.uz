@@ -214,12 +214,17 @@
                 </div>
                 <div class="card-body">
                     @if($news->featured_image)
-                    <div class="mb-3">
-                        <img src="{{ asset($news->featured_image) }}" alt="{{ $news->title_uz }}"
+                    <div class="mb-2" id="current_image_wrap">
+                        <img src="{{ $news->featured_image_url }}" alt="{{ $news->title_uz }}"
                              class="img-fluid rounded" id="current_image"
                              onerror="this.onerror=null;this.src='{{ asset('images/ext/placeholder.jpg') }}'">
+                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 w-100" onclick="removeFeaturedImage()">
+                            <i class="fas fa-trash"></i> Rasmni o'chirish
+                        </button>
                     </div>
                     @endif
+                    {{-- O'chirish belgisi: saqlanганda rasm bazadan olib tashlanadi --}}
+                    <input type="hidden" name="remove_featured_image" id="remove_featured_image" value="0">
                     <div class="file-drop-area">
                         {{-- name yo'q: faqat AJAX uchun, formada multipart yuborilmaydi (WAF-safe) --}}
                         <input type="file" accept="image/*" id="featured_image_input" data-no-waf>
@@ -277,9 +282,24 @@ tinymce.init({
     promotion: false
 });
 
+function removeFeaturedImage() {
+    document.getElementById('remove_featured_image').value = '1';
+    document.getElementById('featured_image_path').value = '';
+    const wrap = document.getElementById('current_image_wrap');
+    if (wrap) wrap.style.display = 'none';
+    const fi = document.getElementById('featured_image_input');
+    if (fi) fi.value = '';
+    const prev = document.getElementById('image_preview');
+    if (prev) prev.style.display = 'none';
+    const st = document.getElementById('image_status');
+    if (st) { st.textContent = "Rasm o'chiriladi (saqlangandan keyin)"; st.style.color = '#ef4444'; }
+}
+
 document.getElementById('featured_image_input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
+    // yangi rasm tanlandi → o'chirish belgisini bekor qil
+    document.getElementById('remove_featured_image').value = '0';
     const status = document.getElementById('image_status');
     const reader = new FileReader();
     reader.onload = function(ev) {

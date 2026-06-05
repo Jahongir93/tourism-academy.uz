@@ -84,11 +84,13 @@ class PageController extends Controller
             $validated['slug'] = Str::slug($validated['title_uz']);
         }
         
-        if ($request->hasFile('featured_image')) {
+        if ($request->filled('featured_image_path')) {
+            $validated['featured_image'] = preg_replace('#^storage/#', '', ltrim($request->input('featured_image_path'), '/'));
+        } elseif ($request->hasFile('featured_image')) {
             $validated['featured_image'] = $request->file('featured_image')
                 ->store('cms/pages', 'public');
         }
-        
+
         if ($request->hasFile('og_image')) {
             $validated['og_image'] = $request->file('og_image')
                 ->store('cms/pages/og', 'public');
@@ -154,7 +156,13 @@ class PageController extends Controller
             'published_at' => 'nullable|date'
         ]);
 
-        if ($request->hasFile('featured_image')) {
+        // Asosiy rasm: o'chirish → AJAX path → multipart fayl
+        if ($request->input('remove_featured_image') == '1' && !$request->filled('featured_image_path')) {
+            $validated['featured_image'] = null;
+        } elseif ($request->filled('featured_image_path')) {
+            // b64 endpoint 'storage/cms/...' qaytaradi; public disk uchun prefiksni olib tashlash
+            $validated['featured_image'] = preg_replace('#^storage/#', '', ltrim($request->input('featured_image_path'), '/'));
+        } elseif ($request->hasFile('featured_image')) {
             $validated['featured_image'] = $request->file('featured_image')
                 ->store('cms/pages', 'public');
         }

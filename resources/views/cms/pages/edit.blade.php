@@ -209,14 +209,26 @@
                 </div>
                 <div class="card-body">
                     @if($page->featured_image)
-                    <div class="mb-3">
-                        <img src="{{ asset('storage/' . $page->featured_image) }}" class="img-fluid rounded" alt="Joriy rasm">
+                    <div class="mb-2" id="current_image_wrap">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($page->featured_image, ['http','storage/','assets/','images/']) ? asset($page->featured_image) : asset('storage/' . $page->featured_image) }}"
+                             class="img-fluid rounded" alt="Joriy rasm"
+                             onerror="this.onerror=null;this.src='{{ asset('images/ext/placeholder.jpg') }}'">
+                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 w-100" onclick="removeFeaturedImage()">
+                            <i class="fas fa-trash"></i> Rasmni o'chirish
+                        </button>
                     </div>
                     @endif
+                    <input type="hidden" name="remove_featured_image" id="remove_featured_image" value="0">
                     <div class="file-drop-area">
-                        <input type="file" name="featured_image" accept="image/*">
+                        {{-- name yo'q + data-no-waf: WAF-safe, AJAX orqali yuklanadi --}}
+                        <input type="file" accept="image/*" id="featured_image_input" data-no-waf>
+                        <input type="hidden" name="featured_image_path" id="featured_image_path">
                         <i class="fas fa-image mb-1" style="font-size:24px;color:var(--c-amber)"></i>
                         <div style="font-size:12px;font-weight:600;color:var(--c-text);margin-top:4px">{{ $page->featured_image ? 'Yangi rasm tanlang' : 'Rasm tanlang' }}</div>
+                    </div>
+                    <div id="image_status" style="font-size:12px;margin-top:6px"></div>
+                    <div id="image_preview" class="mt-2" style="display:none">
+                        <img src="" class="img-fluid rounded" id="preview_img">
                     </div>
                 </div>
             </div>
@@ -280,5 +292,39 @@ function generateSlug() {
     document.getElementById('slug').value = transliterate(document.getElementById('title_uz').value)
         .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
 }
+
+// Asosiy rasm: WAF-safe AJAX yuklash + o'chirish
+function removeFeaturedImage() {
+    document.getElementById('remove_featured_image').value = '1';
+    document.getElementById('featured_image_path').value = '';
+    const wrap = document.getElementById('current_image_wrap'); if (wrap) wrap.style.display = 'none';
+    const fi = document.getElementById('featured_image_input'); if (fi) fi.value = '';
+    const prev = document.getElementById('image_preview'); if (prev) prev.style.display = 'none';
+    const st = document.getElementById('image_status'); if (st) { st.textContent = "Rasm o'chiriladi (saqlangandan keyin)"; st.style.color = '#ef4444'; }
+}
+document.getElementById('featured_image_input')?.addEventListener('change', function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    document.getElementById('remove_featured_image').value = '0';
+    const status = document.getElementById('image_status');
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        const prev = document.getElementById('preview_img'); prev.src = ev.target.result;
+        document.getElementById('image_preview').style.display = 'block';
+        const wrap = document.getElementById('current_image_wrap'); if (wrap) wrap.style.display = 'none';
+        status.textContent = 'Yuklanmoqda...'; status.style.color = '#f59e0b';
+        fetch('{{ route("cms.upload.image.b64") }}', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'},
+            body: JSON.stringify({ name: file.name, type: file.type, data: ev.target.result.split(',')[1] })
+        })
+        .then(r => r.ok ? r.json() : Promise.reject('HTTP ' + r.status))
+        .then(res => {
+            if (res.path) { document.getElementById('featured_image_path').value = res.path; status.textContent = '✓ Rasm yuklandi'; status.style.color = '#10b981'; }
+            else { throw new Error(res.error || 'xato'); }
+        })
+        .catch(err => { status.textContent = '✗ Xato: ' + err; status.style.color = '#ef4444'; });
+    };
+    reader.readAsDataURL(file);
+});
 </script>
 @endpush

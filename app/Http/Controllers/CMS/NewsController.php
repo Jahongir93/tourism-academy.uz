@@ -7,6 +7,7 @@ use App\Models\CmsNews;
 use App\Models\CmsNewsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class NewsController extends Controller
@@ -42,6 +43,15 @@ class NewsController extends Controller
         return view('cms.news.create', compact('categories'));
     }
 
+    public function categories()
+    {
+        return response()->json(
+            CmsNewsCategory::active()
+                ->orderBy('order_position')
+                ->get(['id', 'name_uz', 'name_ru', 'name_en', 'slug'])
+        );
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -66,63 +76,77 @@ class NewsController extends Controller
             'published_at' => 'nullable|date'
         ]);
 
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title_uz']);
-        }
-
-        // Featured image: AJAX-uploaded path (WAF-safe) yoki to'g'ridan-to'g'ri fayl
-        if ($request->filled('featured_image_path')) {
-            $validated['featured_image'] = ltrim($request->input('featured_image_path'), '/');
-        } elseif ($request->hasFile('featured_image')) {
-            $file = $request->file('featured_image');
-            $dir = public_path('images/news');
-            if (!is_dir($dir)) mkdir($dir, 0775, true);
-            $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-            $file->move($dir, $filename);
-            $validated['featured_image'] = 'images/news/' . $filename;
-        }
-
-        // Upload gallery images
-        $galleryPaths = [];
-        if ($request->hasFile('gallery')) {
-            $galleryDir = public_path('images/news/gallery');
-            if (!is_dir($galleryDir)) mkdir($galleryDir, 0775, true);
-            foreach ($request->file('gallery') as $file) {
-                $filename = time() . '_' . uniqid() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-                $file->move($galleryDir, $filename);
-                $galleryPaths[] = 'images/news/gallery/' . $filename;
+        try {
+            if (empty($validated['slug'])) {
+                $validated['slug'] = CmsNews::generateUniqueSlug($validated['title_uz']);
             }
-        }
-        $validated['gallery'] = $galleryPaths;
 
-        // Upload attachments (PDF/Word)
-        $attachmentPaths = [];
-        if ($request->hasFile('attachments')) {
-            $filesDir = public_path('files/news');
-            if (!is_dir($filesDir)) mkdir($filesDir, 0775, true);
-            foreach ($request->file('attachments') as $file) {
-                $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
-                $file->move($filesDir, $filename);
-                $attachmentPaths[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => 'files/news/' . $filename,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            // Featured image: AJAX-uploaded path (WAF-safe) yoki to'g'ridan-to'g'ri fayl
+            if ($request->filled('featured_image_path')) {
+                $validated['featured_image'] = ltrim($request->input('featured_image_path'), '/');
+            } elseif ($request->hasFile('featured_image')) {
+                $file = $request->file('featured_image');
+                $dir = public_path('images/news');
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0775, true);
+                }
+                $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                $file->move($dir, $filename);
+                $validated['featured_image'] = 'images/news/' . $filename;
             }
+
+            // Upload gallery images
+            $galleryPaths = [];
+            if ($request->hasFile('gallery')) {
+                $galleryDir = public_path('images/news/gallery');
+                if (!is_dir($galleryDir)) {
+                    mkdir($galleryDir, 0775, true);
+                }
+                foreach ($request->file('gallery') as $file) {
+                    $filename = time() . '_' . uniqid() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                    $file->move($galleryDir, $filename);
+                    $galleryPaths[] = 'images/news/gallery/' . $filename;
+                }
+            }
+            $validated['gallery'] = $galleryPaths;
+
+            // Upload attachments (PDF/Word)
+            $attachmentPaths = [];
+            if ($request->hasFile('attachments')) {
+                $filesDir = public_path('files/news');
+                if (!is_dir($filesDir)) {
+                    mkdir($filesDir, 0775, true);
+                }
+                foreach ($request->file('attachments') as $file) {
+                    $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                    $file->move($filesDir, $filename);
+                    $attachmentPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => 'files/news/' . $filename,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType(),
+                    ];
+                }
+            }
+            $validated['attachments'] = $attachmentPaths;
+
+            $validated['tags'] = $this->normalizeTags($validated['tags'] ?? null);
+            $validated['author_id'] = Auth::id();
+
+            $news = CmsNews::create($validated);
+
+            return redirect()->route('cms.news.edit', $news)
+                ->with('success', 'Yangilik muvaffaqiyatli yaratildi!');
+        } catch (\Throwable $e) {
+            Log::error('CMS news store failed', [
+                'message' => $e->getMessage(),
+                'user_id' => Auth::id(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'Yangilikni saqlashda xatolik yuz berdi.']);
         }
-        $validated['attachments'] = $attachmentPaths;
-
-        if (isset($validated['tags'])) {
-            $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
-        }
-
-        $validated['author_id'] = Auth::id();
-
-        $news = CmsNews::create($validated);
-
-        return redirect()->route('cms.news.edit', $news)
-            ->with('success', 'Yangilik muvaffaqiyatli yaratildi!');
     }
 
     public function edit(CmsNews $news)
@@ -155,57 +179,79 @@ class NewsController extends Controller
             'published_at' => 'nullable|date'
         ]);
 
-        // Featured image: AJAX-uploaded path (WAF-safe) yoki to'g'ridan-to'g'ri fayl
-        if ($request->filled('featured_image_path')) {
-            $validated['featured_image'] = ltrim($request->input('featured_image_path'), '/');
-        } elseif ($request->hasFile('featured_image')) {
-            $file = $request->file('featured_image');
-            $dir = public_path('images/news');
-            if (!is_dir($dir)) mkdir($dir, 0775, true);
-            $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-            $file->move($dir, $filename);
-            $validated['featured_image'] = 'images/news/' . $filename;
-        }
-
-        // Upload gallery images (append to existing)
-        if ($request->hasFile('gallery')) {
-            $galleryDir = public_path('images/news/gallery');
-            if (!is_dir($galleryDir)) mkdir($galleryDir, 0775, true);
-            $existingGallery = $news->gallery ?? [];
-            foreach ($request->file('gallery') as $file) {
-                $filename = time() . '_' . uniqid() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-                $file->move($galleryDir, $filename);
-                $existingGallery[] = 'images/news/gallery/' . $filename;
+        try {
+            if (empty($validated['slug'])) {
+                $validated['slug'] = CmsNews::generateUniqueSlug($validated['title_uz'], $news->id);
             }
-            $validated['gallery'] = $existingGallery;
-        }
 
-        // Upload attachments (append to existing)
-        if ($request->hasFile('attachments')) {
-            $filesDir = public_path('files/news');
-            if (!is_dir($filesDir)) mkdir($filesDir, 0775, true);
-            $existingAttachments = $news->attachments ?? [];
-            foreach ($request->file('attachments') as $file) {
-                $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
-                $file->move($filesDir, $filename);
-                $existingAttachments[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => 'files/news/' . $filename,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            // Featured image: o'chirish → yangi rasm → eskisini saqlash
+            if ($request->input('remove_featured_image') == '1' && !$request->filled('featured_image_path')) {
+                $validated['featured_image'] = null;
+            } elseif ($request->filled('featured_image_path')) {
+                $validated['featured_image'] = ltrim($request->input('featured_image_path'), '/');
+            } elseif ($request->hasFile('featured_image')) {
+                $file = $request->file('featured_image');
+                $dir = public_path('images/news');
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0775, true);
+                }
+                $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                $file->move($dir, $filename);
+                $validated['featured_image'] = 'images/news/' . $filename;
             }
-            $validated['attachments'] = $existingAttachments;
+
+            // Upload gallery images (append to existing)
+            if ($request->hasFile('gallery')) {
+                $galleryDir = public_path('images/news/gallery');
+                if (!is_dir($galleryDir)) {
+                    mkdir($galleryDir, 0775, true);
+                }
+                $existingGallery = $news->gallery ?? [];
+                foreach ($request->file('gallery') as $file) {
+                    $filename = time() . '_' . uniqid() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                    $file->move($galleryDir, $filename);
+                    $existingGallery[] = 'images/news/gallery/' . $filename;
+                }
+                $validated['gallery'] = $existingGallery;
+            }
+
+            // Upload attachments (append to existing)
+            if ($request->hasFile('attachments')) {
+                $filesDir = public_path('files/news');
+                if (!is_dir($filesDir)) {
+                    mkdir($filesDir, 0775, true);
+                }
+                $existingAttachments = $news->attachments ?? [];
+                foreach ($request->file('attachments') as $file) {
+                    $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                    $file->move($filesDir, $filename);
+                    $existingAttachments[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => 'files/news/' . $filename,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType(),
+                    ];
+                }
+                $validated['attachments'] = $existingAttachments;
+            }
+
+            $validated['tags'] = $this->normalizeTags($validated['tags'] ?? null);
+
+            $news->update($validated);
+
+            return redirect()->route('cms.news.edit', $news)
+                ->with('success', 'Yangilik muvaffaqiyatli yangilandi!');
+        } catch (\Throwable $e) {
+            Log::error('CMS news update failed', [
+                'message' => $e->getMessage(),
+                'news_id' => $news->id,
+                'user_id' => Auth::id(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'Yangilikni yangilashda xatolik yuz berdi.']);
         }
-
-        if (isset($validated['tags'])) {
-            $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
-        }
-
-        $news->update($validated);
-
-        return redirect()->route('cms.news.edit', $news)
-            ->with('success', 'Yangilik muvaffaqiyatli yangilandi!');
     }
 
     public function destroy(CmsNews $news)
@@ -213,5 +259,20 @@ class NewsController extends Controller
         $news->delete();
         return redirect()->route('cms.news.index')
             ->with('success', 'Yangilik muvaffaqiyatli o\'chirildi!');
+    }
+
+    private function normalizeTags(?string $tags): ?array
+    {
+        if (!is_string($tags) || trim($tags) === '') {
+            return null;
+        }
+
+        $normalized = collect(explode(',', $tags))
+            ->map(fn ($tag) => trim($tag))
+            ->filter()
+            ->values()
+            ->all();
+
+        return $normalized === [] ? null : $normalized;
     }
 }
