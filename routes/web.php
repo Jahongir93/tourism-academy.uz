@@ -725,6 +725,10 @@ Route::middleware(['auth'])->group(function () {
             return response()->json(['success' => true, 'results' => $results]);
         })->name('settings.clear-cache');
 
+        // System maintenance (deploy commands from UI — no terminal needed)
+        Route::post('settings/system/deploy', [App\Http\Controllers\CMS\SystemMaintenanceController::class, 'deploy'])->name('settings.system.deploy');
+        Route::post('settings/system/run/{task}', [App\Http\Controllers\CMS\SystemMaintenanceController::class, 'run'])->name('settings.system.run');
+
         // Theme Management
         Route::prefix('themes')->name('themes.')->group(function () {
             Route::get('/', [App\Http\Controllers\CMS\ThemeController::class, 'index'])->name('index');
@@ -737,6 +741,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/header', [App\Http\Controllers\CMS\HeaderFooterController::class, 'header'])->name('header');
             Route::post('/header', [App\Http\Controllers\CMS\HeaderFooterController::class, 'updateHeader'])->name('header.update');
             Route::post('/header/add-menu', [App\Http\Controllers\CMS\HeaderFooterController::class, 'addHeaderMenu'])->name('header.add-menu');
+            Route::post('/header/update-menu', [App\Http\Controllers\CMS\HeaderFooterController::class, 'updateHeaderMenu'])->name('header.update-menu');
             Route::post('/header/delete-menu', [App\Http\Controllers\CMS\HeaderFooterController::class, 'deleteHeaderMenu'])->name('header.delete-menu');
             Route::post('/header/toggle-menu', [App\Http\Controllers\CMS\HeaderFooterController::class, 'toggleMenuStatus'])->name('header.toggle-menu');
             Route::post('/header/add-submenu', [App\Http\Controllers\CMS\HeaderFooterController::class, 'addSubmenu'])->name('header.add-submenu');
@@ -745,6 +750,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/footer', [App\Http\Controllers\CMS\HeaderFooterController::class, 'footer'])->name('footer');
             Route::post('/footer', [App\Http\Controllers\CMS\HeaderFooterController::class, 'updateFooter'])->name('footer.update');
             Route::post('/footer/add-link', [App\Http\Controllers\CMS\HeaderFooterController::class, 'addFooterLink'])->name('footer.add-link');
+            Route::post('/footer/update-link', [App\Http\Controllers\CMS\HeaderFooterController::class, 'updateFooterLink'])->name('footer.update-link');
             Route::post('/footer/delete-link', [App\Http\Controllers\CMS\HeaderFooterController::class, 'deleteFooterLink'])->name('footer.delete-link');
         });
 
@@ -849,6 +855,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('courses/{course}/progress', [App\Http\Controllers\LMS\CourseController::class, 'updateProgress'])->name('courses.progress');
         Route::delete('courses/{course}/thumbnail', [App\Http\Controllers\LMS\CourseController::class, 'deleteThumbnail'])->name('courses.deleteThumbnail');
         Route::delete('courses/{course}/intro-video', [App\Http\Controllers\LMS\CourseController::class, 'deleteIntroVideo'])->name('courses.deleteIntroVideo');
+        Route::get('resources/{resource}/view', [App\Http\Controllers\LMS\CourseController::class, 'viewResource'])->name('resources.view');
+        Route::post('resources/{resource}/complete', [App\Http\Controllers\LMS\CourseController::class, 'completeResource'])->name('resources.complete');
 
         // Course Curriculum/Topics
         Route::get('courses/{course}/curriculum', [App\Http\Controllers\LMS\CourseController::class, 'curriculum'])->name('courses.curriculum');
@@ -949,7 +957,19 @@ Route::middleware(['auth'])->group(function () {
     // Employee Management Routes
     Route::prefix('employees')->group(function () {
         // Main employee routes
-        Route::get('/', [App\Http\Controllers\Employees\EmployeeController::class, 'index'])->name('employees.index');
+        Route::get('/', [App\Http\Controllers\Employees\StaffUserController::class, 'index'])
+            ->middleware('role:SuperAdmin')
+            ->name('employees.index');
+        Route::prefix('users')
+            ->middleware('role:SuperAdmin')
+            ->name('employees.users.')
+            ->group(function () {
+                Route::get('/create', [App\Http\Controllers\Employees\StaffUserController::class, 'create'])->name('create');
+                Route::post('/', [App\Http\Controllers\Employees\StaffUserController::class, 'store'])->name('store');
+                Route::get('/{user}/edit', [App\Http\Controllers\Employees\StaffUserController::class, 'edit'])->name('edit');
+                Route::put('/{user}', [App\Http\Controllers\Employees\StaffUserController::class, 'update'])->name('update');
+                Route::delete('/{user}', [App\Http\Controllers\Employees\StaffUserController::class, 'destroy'])->name('destroy');
+            });
         Route::get('/teachers', [App\Http\Controllers\Employees\EmployeeController::class, 'teachers'])->name('employees.teachers');
         Route::get('/administrative', [App\Http\Controllers\Employees\EmployeeController::class, 'administrative'])->name('employees.administrative');
         Route::get('/create', [App\Http\Controllers\Employees\EmployeeController::class, 'create'])->name('employees.create');
@@ -1348,4 +1368,3 @@ Route::get('/{slug}', function($slug) {
 
     return view('cms.pages.preview', compact('page'));
 })->name('cms.page.public')->where('slug', '[a-zA-Z0-9\-]+');
-
