@@ -731,9 +731,20 @@
 <!-- Map Section -->
 <section class="map-section">
     <div class="container">
+        @php
+            // Xarita: CMS'dan boshqariladi (embed URL yoki to'liq iframe paste qilingan bo'lishi mumkin)
+            $mapDefault = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3067.8897645692387!2d66.95746731534896!3d39.65480397946463!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f4d191960077df7%3A0x487736c5d08182a7!2sSamarkand%20Institute%20of%20Economics%20and%20Service!5e0!3m2!1sen!2s!4v1703000000000!5m2!1sen!2s';
+            $mapRaw = $getContent('contact_map_embed', $mapDefault) ?: $mapDefault;
+            // Agar to'liq <iframe ...> paste qilingan bo'lsa — src ni ajratib olamiz
+            if (preg_match('/src=["\\\']([^"\\\']+)["\\\']/', $mapRaw, $mm)) {
+                $mapSrc = $mm[1];
+            } else {
+                $mapSrc = trim($mapRaw);
+            }
+        @endphp
         <div class="map-container" data-aos="zoom-in">
             <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3067.8897645692387!2d66.95746731534896!3d39.65480397946463!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f4d191960077df7%3A0x487736c5d08182a7!2sSamarkand%20Institute%20of%20Economics%20and%20Service!5e0!3m2!1sen!2s!4v1703000000000!5m2!1sen!2s"
+                src="{{ $mapSrc }}"
                 width="100%"
                 height="100%"
                 style="border:0;"

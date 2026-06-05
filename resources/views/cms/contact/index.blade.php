@@ -107,6 +107,13 @@
 
                         <h6 class="fw-bold text-primary mt-4"><i class="fas fa-share-alt me-1"></i> Ijtimoiy tarmoqlar</h6>
                         {!! $render('contact_social_title', 'Ijtimoiy tarmoqlar sarlavhasi') !!}
+
+                        <h6 class="fw-bold text-primary mt-4"><i class="fas fa-map-marked-alt me-1"></i> Xarita (Google Maps)</h6>
+                        <div class="alert alert-info py-2" style="font-size:13px">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Google Maps'da joyni oching → <b>Share → Embed a map</b> → HTML'dan <b>src="..."</b> ichidagi havolani yoki butun &lt;iframe&gt; kodini <b>UZ</b> katagiga joylang.
+                        </div>
+                        {!! $render('contact_map_embed', 'Xarita embed URL (yoki iframe kodi)', 'textarea') !!}
                     </div>
                 </div>
             </div>

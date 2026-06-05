@@ -47,6 +47,9 @@ class ContactPageController extends Controller
             // Social
             ['key' => 'contact_social_title', 'type' => 'text', 'value_uz' => 'Ijtimoiy tarmoqlar', 'value_en' => 'Social Networks', 'value_ru' => 'Социальные сети', 'order' => 30],
 
+            // Map (Google Maps embed URL)
+            ['key' => 'contact_map_embed', 'type' => 'textarea', 'value_uz' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3067.8897645692387!2d66.95746731534896!3d39.65480397946463!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f4d191960077df7%3A0x487736c5d08182a7!2sSamarkand%20Institute%20of%20Economics%20and%20Service!5e0!3m2!1sen!2s!4v1703000000000!5m2!1sen!2s', 'value_en' => '', 'value_ru' => '', 'order' => 31],
+
             // Contact form
             ['key' => 'contact_form_title', 'type' => 'text', 'value_uz' => 'Xabar yuborish', 'value_en' => 'Send Message', 'value_ru' => 'Отправить сообщение', 'order' => 40],
             ['key' => 'contact_form_subtitle', 'type' => 'textarea', 'value_uz' => 'Formani to\'ldirib yuboring', 'value_en' => 'Fill out the form and send', 'value_ru' => 'Заполните форму и отправьте', 'order' => 41],
