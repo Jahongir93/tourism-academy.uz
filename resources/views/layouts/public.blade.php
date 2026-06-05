@@ -93,6 +93,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
+    @if(!empty($siteFavicon))
+    <link rel="icon" href="{{ $siteFavicon }}">
+    <link rel="shortcut icon" href="{{ $siteFavicon }}">
+    @endif
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Tourism va Service fakulteti')</title>
     <meta name="description" content="@yield('description', 'Tourism va Service fakultetining rasmiy veb-sayti')">
@@ -1846,8 +1850,10 @@
                     <!-- Logo -->
                     <div class="navbar-brand">
                         <a href="{{ route('home') }}" class="logo">
-                            @if($logoUrl && $logoUrl->value_uz)
-                                <img src="{{ asset('storage/' . $logoUrl->value_uz) }}" alt="{{ $siteName->$langField ?? 'Tourism Academy' }}">
+                            @if(!empty($siteLogo))
+                                <img src="{{ $siteLogo }}" alt="{{ $siteName->$langField ?? 'Tourism Academy' }}">
+                            @elseif($logoUrl && $logoUrl->value_uz)
+                                <img src="{{ \App\Support\CmsHeaderFooter::assetUrl($logoUrl->value_uz) }}" alt="{{ $siteName->$langField ?? 'Tourism Academy' }}">
                             @else
                                 <img src="{{ asset('images/logo.png') }}" alt="Tourism Academy Logo">
                             @endif
@@ -2207,7 +2213,7 @@
                     <!-- Column 1: Logo & Description -->
                     <div class="footer-brand">
                         @if($footerLogo && $footerLogo->value_uz)
-                            <img src="{{ asset('storage/' . $footerLogo->value_uz) }}" alt="{{ $footerTitle->$langField ?? 'Tourism Academy' }}" class="footer-logo">
+                            <img src="{{ \App\Support\CmsHeaderFooter::assetUrl($footerLogo->value_uz) }}" alt="{{ $footerTitle->$langField ?? 'Tourism Academy' }}" class="footer-logo">
                         @else
                             <img src="{{ asset('images/logo.png') }}" alt="Tourism Academy Logo" class="footer-logo">
                         @endif

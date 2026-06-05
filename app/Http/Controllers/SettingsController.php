@@ -73,16 +73,22 @@ class SettingsController extends Controller
                 }
             }
 
-            // Handle file uploads
-            if ($request->hasFile('site_logo')) {
+            // Logo: WAF-safe AJAX-uploaded path first, then direct file
+            if ($request->filled('site_logo_path')) {
+                SystemSetting::set('site_logo', ltrim($request->input('site_logo_path'), '/'));
+            } elseif ($request->hasFile('site_logo')) {
                 $path = $request->file('site_logo')->store('settings', 'public');
                 SystemSetting::set('site_logo', $path);
             }
 
-            if ($request->hasFile('site_favicon')) {
+            if ($request->filled('site_favicon_path')) {
+                SystemSetting::set('site_favicon', ltrim($request->input('site_favicon_path'), '/'));
+            } elseif ($request->hasFile('site_favicon')) {
                 $path = $request->file('site_favicon')->store('settings', 'public');
                 SystemSetting::set('site_favicon', $path);
             }
+
+            SystemSetting::clearCache();
 
             ActivityLog::log('update', 'Updated general settings');
 

@@ -66,6 +66,23 @@ class AppServiceProvider extends ServiceProvider
         // Share template helper with all views (skip during CLI/artisan commands)
         if (!$this->app->runningInConsole()) {
             View::share('activeTemplate', TemplateHelper::getActiveTemplate());
+
+            // Site logo / favicon from Settings → available in every view
+            try {
+                $resolve = function ($path) {
+                    if (!$path) return null;
+                    if (str_starts_with($path, 'http')) return $path;
+                    if (str_starts_with($path, 'storage/') || str_starts_with($path, 'assets/') || str_starts_with($path, 'images/')) {
+                        return asset($path);
+                    }
+                    return asset('storage/' . ltrim($path, '/'));
+                };
+                View::share('siteLogo', $resolve(\App\Models\SystemSetting::get('site_logo')));
+                View::share('siteFavicon', $resolve(\App\Models\SystemSetting::get('site_favicon')));
+            } catch (\Throwable $e) {
+                View::share('siteLogo', null);
+                View::share('siteFavicon', null);
+            }
         }
 
         // Blade directive for template-specific content

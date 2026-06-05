@@ -114,6 +114,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @if(!empty($siteFavicon))
+    <link rel="icon" href="{{ $siteFavicon }}">
+    <link rel="shortcut icon" href="{{ $siteFavicon }}">
+    @endif
     <title>@yield('title', 'Tourism va Service fakulteti')</title>
     <meta name="description" content="@yield('description', 'Tourism va Service fakultetining rasmiy veb-sayti')">
 
@@ -3057,8 +3061,10 @@
                     <!-- Left: Logos -->
                     <div class="header-logos">
                         <a href="{{ route('home') }}" title="Bosh sahifa">
-                            @if($logoUrl && $logoUrl->$langField)
-                                <img src="{{ asset($logoUrl->$langField) }}" alt="Academy Logo">
+                            @if(!empty($siteLogo))
+                                <img src="{{ $siteLogo }}" alt="Academy Logo">
+                            @elseif($logoUrl && $logoUrl->$langField)
+                                <img src="{{ \App\Support\CmsHeaderFooter::assetUrl($logoUrl->$langField) }}" alt="Academy Logo">
                             @else
                                 <img src="{{ asset('images/logo.png') }}" alt="Academy Logo" onerror="this.style.display='none'">
                             @endif
@@ -3399,9 +3405,9 @@
                     <!-- Column 1: About -->
                     <div class="col-lg-4 col-md-6">
                         @if($footerLogo && $footerLogo->$langField)
-                            <img src="{{ asset($footerLogo->$langField) }}" alt="Logo" class="footer-logo">
+                            <img src="{{ \App\Support\CmsHeaderFooter::assetUrl($footerLogo->$langField) }}" alt="Logo" class="footer-logo">
                         @elseif($logoUrl && $logoUrl->$langField)
-                            <img src="{{ asset($logoUrl->$langField) }}" alt="Logo" class="footer-logo">
+                            <img src="{{ \App\Support\CmsHeaderFooter::assetUrl($logoUrl->$langField) }}" alt="Logo" class="footer-logo">
                         @endif
                         <p class="footer-desc">
                             {{ $footerDesc && $footerDesc->$langField ? $footerDesc->$langField : 'Xalqaro standartlarga mos ta\'lim va professional rivojlanish platformasi.' }}

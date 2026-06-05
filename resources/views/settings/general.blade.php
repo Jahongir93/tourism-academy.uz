@@ -157,27 +157,37 @@
                         <h5 class="mb-0"><i class="fas fa-image text-warning me-2"></i>Logo va Favicon</h5>
                     </div>
                     <div class="card-body">
+                        @php
+                            $resolveImg = function($p){
+                                if(!$p) return null;
+                                if(\Illuminate\Support\Str::startsWith($p,['http','storage/','assets/','images/'])) return asset($p);
+                                return asset('storage/'.ltrim($p,'/'));
+                            };
+                            $currentLogo = $settings->where('key', 'site_logo')->first()?->value;
+                            $currentFavicon = $settings->where('key', 'site_favicon')->first()?->value;
+                        @endphp
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Sayt logosi</label>
-                            @php $currentLogo = $settings->where('key', 'site_logo')->first()?->value; @endphp
-                            @if($currentLogo)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $currentLogo) }}" alt="Logo" class="img-thumbnail" style="max-height: 60px;">
+                                <img id="logo_preview" src="{{ $currentLogo ? $resolveImg($currentLogo) : '' }}" alt="Logo"
+                                     class="img-thumbnail" style="max-height:60px;{{ $currentLogo ? '' : 'display:none' }}">
                             </div>
-                            @endif
-                            <input type="file" name="site_logo" class="form-control" accept="image/*">
+                            {{-- name yo'q + data-no-waf: WAF-safe, AJAX orqali yuklanadi --}}
+                            <input type="file" id="site_logo_input" class="form-control" accept="image/*" data-no-waf>
+                            <input type="hidden" name="site_logo_path" id="site_logo_path">
+                            <div id="logo_status" style="font-size:12px;margin-top:4px"></div>
                             <small class="text-muted">Tavsiya: PNG yoki SVG, max 2MB</small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Favicon</label>
-                            @php $currentFavicon = $settings->where('key', 'site_favicon')->first()?->value; @endphp
-                            @if($currentFavicon)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $currentFavicon) }}" alt="Favicon" class="img-thumbnail" style="max-height: 32px;">
+                                <img id="favicon_preview" src="{{ $currentFavicon ? $resolveImg($currentFavicon) : '' }}" alt="Favicon"
+                                     class="img-thumbnail" style="max-height:32px;{{ $currentFavicon ? '' : 'display:none' }}">
                             </div>
-                            @endif
-                            <input type="file" name="site_favicon" class="form-control" accept="image/*">
+                            <input type="file" id="site_favicon_input" class="form-control" accept="image/*" data-no-waf>
+                            <input type="hidden" name="site_favicon_path" id="site_favicon_path">
+                            <div id="favicon_status" style="font-size:12px;margin-top:4px"></div>
                             <small class="text-muted">Tavsiya: ICO yoki PNG 32x32, max 1MB</small>
                         </div>
                     </div>
@@ -249,4 +259,39 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 </style>
+
+<script>
+// WAF-safe logo/favicon upload: AJAX base64 → hidden path field
+function wafUpload(inputId, pathId, previewId, statusId) {
+    var input = document.getElementById(inputId);
+    if (!input) return;
+    input.addEventListener('change', function() {
+        var file = this.files[0];
+        if (!file) return;
+        var status = document.getElementById(statusId);
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            var prev = document.getElementById(previewId);
+            if (prev) { prev.src = ev.target.result; prev.style.display = 'inline-block'; }
+            status.textContent = 'Yuklanmoqda...'; status.style.color = '#f59e0b';
+            fetch('{{ route('cms.upload.image.b64') }}', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'},
+                body: JSON.stringify({ name: file.name, type: file.type, data: ev.target.result.split(',')[1] })
+            })
+            .then(function(r){ return r.ok ? r.json() : Promise.reject('HTTP '+r.status); })
+            .then(function(res){
+                if (res.path) {
+                    document.getElementById(pathId).value = res.path;
+                    status.textContent = '✓ Yuklandi — saqlashni bosing'; status.style.color = '#10b981';
+                } else { throw new Error(res.error || 'xato'); }
+            })
+            .catch(function(err){ status.textContent = '✗ Xato: ' + err; status.style.color = '#ef4444'; });
+        };
+        reader.readAsDataURL(file);
+    });
+}
+wafUpload('site_logo_input', 'site_logo_path', 'logo_preview', 'logo_status');
+wafUpload('site_favicon_input', 'site_favicon_path', 'favicon_preview', 'favicon_status');
+</script>
 @endsection
