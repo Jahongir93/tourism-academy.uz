@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use App\Support\PublicAssetPath;
 
 class CmsNews extends Model
 {
@@ -34,9 +35,37 @@ class CmsNews extends Model
     {
         static::creating(function ($news) {
             if (empty($news->slug)) {
-                $news->slug = Str::slug($news->title_uz);
+                $news->slug = static::generateUniqueSlug($news->title_uz);
             }
         });
+
+        // Bosh sahifa keshini tozalash — o'zgarishlar darhol ko'rinsin
+        static::saved(fn() => \Illuminate\Support\Facades\Cache::forget('home_page_data'));
+        static::deleted(fn() => \Illuminate\Support\Facades\Cache::forget('home_page_data'));
+    }
+
+    public static function generateUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($title);
+
+        if ($baseSlug === '') {
+            $baseSlug = 'news';
+        }
+
+        $slug = $baseSlug;
+        $suffix = 2;
+
+        while (
+            static::query()
+                ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = $baseSlug . '-' . $suffix;
+            $suffix++;
+        }
+
+        return $slug;
     }
 
     public function category(): BelongsTo
@@ -71,5 +100,10 @@ class CmsNews extends Model
     public function incrementViewCount()
     {
         $this->increment('views_count');
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        return PublicAssetPath::url($this->featured_image);
     }
 }

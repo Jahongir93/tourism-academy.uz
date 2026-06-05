@@ -67,7 +67,8 @@ class ScheduleSlot extends Model
 
     public function teacher(): BelongsTo
     {
-        return $this->belongsTo(Teacher::class);
+        // Teachers are unified into employees (employee_type = teacher)
+        return $this->belongsTo(Employee::class, 'teacher_id');
     }
 
     public function room(): BelongsTo

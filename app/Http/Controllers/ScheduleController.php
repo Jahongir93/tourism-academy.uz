@@ -79,7 +79,7 @@ class ScheduleController extends Controller
             $groups = AcademicGroup::orderBy('name')->get();
         }
 
-        $teachers = Teacher::orderBy('last_name')->orderBy('first_name')->get();
+        $teachers = \App\Models\Employee::where('employee_type', 'teacher')->orderBy('last_name')->orderBy('first_name')->get();
 
         return view('schedule.index', compact('schedules', 'groups', 'teachers'));
     }
@@ -98,7 +98,7 @@ class ScheduleController extends Controller
             $groups = AcademicGroup::orderBy('name')->get();
         }
 
-        $teachers = Teacher::orderBy('last_name')->orderBy('first_name')->get();
+        $teachers = \App\Models\Employee::where('employee_type', 'teacher')->orderBy('last_name')->orderBy('first_name')->get();
 
         $classrooms = Classroom::where(function($q) {
             $q->where('is_active', true)->orWhereNull('is_active');
@@ -296,7 +296,7 @@ class ScheduleController extends Controller
             $groups = AcademicGroup::orderBy('name')->get();
         }
 
-        $teachers = Teacher::orderBy('last_name')->orderBy('first_name')->get();
+        $teachers = \App\Models\Employee::where('employee_type', 'teacher')->orderBy('last_name')->orderBy('first_name')->get();
 
         $classrooms = Classroom::where(function($q) {
             $q->where('is_active', true)->orWhereNull('is_active');
@@ -362,7 +362,7 @@ class ScheduleController extends Controller
             $groups = AcademicGroup::orderBy('name')->get();
         }
 
-        $teachers = Teacher::orderBy('last_name')->orderBy('first_name')->get();
+        $teachers = \App\Models\Employee::where('employee_type', 'teacher')->orderBy('last_name')->orderBy('first_name')->get();
         $classrooms = Classroom::where(function($q) {
             $q->where('is_active', true)->orWhereNull('is_active');
         })->orderBy('name')->get();

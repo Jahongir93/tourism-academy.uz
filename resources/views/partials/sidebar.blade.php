@@ -99,11 +99,16 @@
 </style>
 
 @php
-function sbActive(string ...$patterns): bool {
-    foreach ($patterns as $p) {
-        if (str_contains($p, '*') ? request()->routeIs($p) : request()->is(ltrim($p,'/'))) return true;
+if (!function_exists('sbActive')) {
+    function sbActive(string ...$patterns): bool {
+        foreach ($patterns as $p) {
+            if (str_contains($p, '*') ? request()->routeIs($p) : request()->is(ltrim($p, '/'))) {
+                return true;
+            }
+        }
+
+        return false;
     }
-    return false;
 }
 @endphp
 
@@ -211,7 +216,7 @@ function sbActive(string ...$patterns): bool {
                 </a>
                 @endcanany
                 @can('manage_employees')
-                <a href="{{ route('employees.create') }}" class="sb-sub-item {{ sbActive('employees.create') ? 'active' : '' }}">
+                <a href="{{ route('employees.users.create') }}" class="sb-sub-item {{ sbActive('employees.users.create') ? 'active' : '' }}">
                     <i class="fas fa-user-plus"></i> Yangi xodim
                 </a>
                 @endcan
@@ -325,6 +330,9 @@ function sbActive(string ...$patterns): bool {
                 @can('view_schedule')
                 <a href="{{ route('schedule.index') }}" class="sb-sub-item {{ sbActive('schedule.*') ? 'active' : '' }}">
                     <i class="fas fa-th"></i> Dars jadvali
+                </a>
+                <a href="{{ route('classrooms.index') }}" class="sb-sub-item {{ sbActive('classrooms.*') ? 'active' : '' }}">
+                    <i class="fas fa-door-open"></i> Xonalar nazorati
                 </a>
                 @endcan
                 @can('view_attendance')

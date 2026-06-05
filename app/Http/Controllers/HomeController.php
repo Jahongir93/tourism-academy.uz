@@ -32,8 +32,8 @@ class HomeController extends Controller
         Session::put('locale', $locale);
 
         try {
-            // Cache ma'lumotlarni 10 daqiqaga
-            $data = Cache::remember('home_page_data', 600, function () {
+            // Cache ma'lumotlarni 2 daqiqaga (yangilik/tadbir saqlanganda darhol tozalanadi)
+            $data = Cache::remember('home_page_data', 120, function () {
                 return [
                     // Statistika
                     'stats' => [
@@ -49,7 +49,7 @@ class HomeController extends Controller
 
                     // So'nggi yangiliklar
                     'latest_news' => CmsNews::with('category')
-                        ->where('status', 'published')
+                        ->published()
                         ->orderBy('published_at', 'desc')
                         ->limit(4)
                         ->get(),
@@ -202,7 +202,7 @@ class HomeController extends Controller
 
         // Get blog posts (using CmsNews as blog)
         $posts = CmsNews::with('category')
-            ->where('status', 'published')
+            ->published()
             ->orderBy('published_at', 'desc')
             ->paginate(12);
 

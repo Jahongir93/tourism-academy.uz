@@ -608,6 +608,10 @@ Route::middleware(['auth'])->group(function () {
         });
     });
     
+    // Xonalar nazorati (Classroom management) — O'quv jarayoni
+    Route::resource('classrooms', App\Http\Controllers\ClassroomController::class)
+        ->except(['show']);
+
     // Schedule Management Routes
     Route::prefix('schedule')->group(function () {
         Route::get('/', [App\Http\Controllers\ScheduleController::class, 'index'])->name('schedule.index');

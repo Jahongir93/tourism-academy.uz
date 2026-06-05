@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use App\Support\PublicAssetPath;
 
 class CmsEvent extends Model
 {
@@ -45,6 +46,9 @@ class CmsEvent extends Model
                 $event->slug = Str::slug($event->title_uz);
             }
         });
+
+        static::saved(fn() => \Illuminate\Support\Facades\Cache::forget('home_page_data'));
+        static::deleted(fn() => \Illuminate\Support\Facades\Cache::forget('home_page_data'));
     }
 
     public function creator(): BelongsTo
@@ -93,5 +97,10 @@ class CmsEvent extends Model
         }
         
         return $this->status === 'upcoming';
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        return PublicAssetPath::url($this->featured_image);
     }
 }
