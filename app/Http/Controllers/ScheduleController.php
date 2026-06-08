@@ -404,14 +404,18 @@ class ScheduleController extends Controller
             6 => 'Shanba'
         ];
 
-        $timeSlots = [
-            1 => ['name' => '1-para', 'start_time' => '08:30', 'end_time' => '09:50'],
-            2 => ['name' => '2-para', 'start_time' => '10:10', 'end_time' => '11:30'],
-            3 => ['name' => '3-para', 'start_time' => '12:00', 'end_time' => '13:20'],
-            4 => ['name' => '4-para', 'start_time' => '14:00', 'end_time' => '15:20'],
-            5 => ['name' => '5-para', 'start_time' => '15:40', 'end_time' => '17:00'],
-            6 => ['name' => '6-para', 'start_time' => '17:20', 'end_time' => '18:40'],
-        ];
+        // View [kun][slot] bo'yicha guruhlangan kutadi: $schedules[$dayNum][$slotId]
+        $schedules = $schedules->groupBy('day_of_week')->map(fn($byDay) => $byDay->groupBy('time_slot'));
+
+        // View obyekt sifatida ishlatadi ($timeSlot->name) — shuning uchun obyekt
+        $timeSlots = collect([
+            (object) ['id' => 1, 'slot_number' => 1, 'name' => '1-para', 'start_time' => '08:30', 'end_time' => '09:50'],
+            (object) ['id' => 2, 'slot_number' => 2, 'name' => '2-para', 'start_time' => '10:10', 'end_time' => '11:30'],
+            (object) ['id' => 3, 'slot_number' => 3, 'name' => '3-para', 'start_time' => '12:00', 'end_time' => '13:20'],
+            (object) ['id' => 4, 'slot_number' => 4, 'name' => '4-para', 'start_time' => '14:00', 'end_time' => '15:20'],
+            (object) ['id' => 5, 'slot_number' => 5, 'name' => '5-para', 'start_time' => '15:40', 'end_time' => '17:00'],
+            (object) ['id' => 6, 'slot_number' => 6, 'name' => '6-para', 'start_time' => '17:20', 'end_time' => '18:40'],
+        ]);
 
         return view('schedule.weekly', compact('groups', 'teachers', 'classrooms', 'schedules', 'days', 'timeSlots', 'selectedGroupId', 'selectedTeacherId'));
     }
@@ -425,61 +429,37 @@ class ScheduleController extends Controller
             $q->where('is_active', true)->orWhereNull('is_active');
         })->with('building')->orderBy('name')->get();
 
-        // Get current day and time slot
-        $currentDay = now()->dayOfWeek;
-        $currentDay = $currentDay == 0 ? 7 : $currentDay; // Sunday = 7
-
-        $currentHour = now()->hour;
-        $currentMinute = now()->minute;
-        $currentTime = $currentHour * 60 + $currentMinute;
-
-        // Determine current time slot
-        $slotTimes = [
-            1 => [510, 590],   // 08:30 - 09:50
-            2 => [610, 690],   // 10:10 - 11:30
-            3 => [720, 800],   // 12:00 - 13:20
-            4 => [840, 920],   // 14:00 - 15:20
-            5 => [940, 1020],  // 15:40 - 17:00
-            6 => [1040, 1120], // 17:20 - 18:40
-        ];
-
-        $currentSlot = null;
-        foreach ($slotTimes as $slot => $times) {
-            if ($currentTime >= $times[0] && $currentTime <= $times[1]) {
-                $currentSlot = $slot;
-                break;
-            }
-        }
-
-        // Get occupied rooms for current slot
-        $occupiedRooms = [];
-        if ($currentSlot && $currentDay <= 6) {
-            $slots = ScheduleSlot::with(['schedule.group', 'subject', 'teacher'])
-                ->where('day_of_week', $currentDay)
-                ->where('time_slot', $currentSlot)
-                ->whereHas('schedule', function($q) {
-                    $q->where('status', 'active');
-                })
-                ->get();
-
-            foreach ($slots as $slot) {
-                $occupiedRooms[$slot->room_id] = [
-                    'group' => $slot->schedule->group->name ?? 'N/A',
-                    'subject' => $slot->subject->name_uz ?? $slot->subject->name ?? 'N/A',
-                    'teacher' => $slot->teacher ? ($slot->teacher->last_name . ' ' . $slot->teacher->first_name) : 'N/A'
-                ];
-            }
-        }
-
         $days = [
-            1 => 'Dushanba',
-            2 => 'Seshanba',
-            3 => 'Chorshanba',
-            4 => 'Payshanba',
-            5 => 'Juma',
-            6 => 'Shanba'
+            1 => 'Dushanba', 2 => 'Seshanba', 3 => 'Chorshanba',
+            4 => 'Payshanba', 5 => 'Juma', 6 => 'Shanba',
         ];
 
-        return view('schedule.room-monitoring', compact('classrooms', 'occupiedRooms', 'currentDay', 'currentSlot', 'days'));
+        // Time slots (default jadval bo'sh bo'lsa yaratiladi)
+        $timeSlots = TimeSlot::orderBy('slot_number')->get();
+        if ($timeSlots->isEmpty()) {
+            $this->createDefaultTimeSlots();
+            $timeSlots = TimeSlot::orderBy('slot_number')->get();
+        }
+
+        // Joriy kun/slot
+        $currentDay = now()->dayOfWeek == 0 ? 7 : now()->dayOfWeek;
+        $defaultSlot = $timeSlots->first()->slot_number ?? ($timeSlots->first()->id ?? 1);
+
+        // Tanlangan filtr (yoki joriy)
+        $selectedDay = (int) $request->get('day', $currentDay <= 6 ? $currentDay : 1);
+        $selectedTimeSlot = (int) $request->get('time_slot', $defaultSlot);
+
+        // Tanlangan kun+slot uchun band xonalar (collection, room_id bo'yicha)
+        $occupiedRooms = ScheduleSlot::with(['schedule.group', 'subject', 'teacher'])
+            ->where('day_of_week', $selectedDay)
+            ->where('time_slot', $selectedTimeSlot)
+            ->whereHas('schedule', fn($q) => $q->where('status', 'active'))
+            ->get()
+            ->keyBy('room_id');
+
+        return view('schedule.room-monitoring', compact(
+            'classrooms', 'occupiedRooms', 'days', 'timeSlots',
+            'selectedDay', 'selectedTimeSlot', 'currentDay'
+        ));
     }
 }

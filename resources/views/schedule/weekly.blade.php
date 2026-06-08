@@ -142,7 +142,7 @@
                                                     <div class="schedule-info">
                                                         <i class="fas fa-users"></i> {{ $schedule->group->name }}<br>
                                                         <i class="fas fa-chalkboard-teacher"></i> {{ $schedule->teacher->full_name }}<br>
-                                                        <i class="fas fa-door-open"></i> {{ $schedule->classroom->name ?? '-' }}
+                                                        <i class="fas fa-door-open"></i> {{ $schedule->room->name ?? '-' }}
                                                     </div>
                                                 </div>
                                             @endforeach
